@@ -13,6 +13,13 @@
     />
   </head>
   <body>
-    <h1>YOOO</h1>
+    <div th:replace="fragments/layout :: header(title='Register')"></div>
+    <!-- <div th:replace="fragments/layout :: nav"></div> -->
+    <form th:action="@{/register}" th:object="${account}" method="POST">
+      <button type="submit" class="btn btn-primary">
+        Create account
+      </button>
+    </form>
+    <div th:replace="fragments/layout :: footer"></div>
   </body>
 </html>

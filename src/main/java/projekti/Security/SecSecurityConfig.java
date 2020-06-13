@@ -1,4 +1,4 @@
-package projekti;
+package projekti.Security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,15 +19,15 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
   // @Autowired
   // private CustomUserDetailsService customUserDetailsService;
 
-  @Override
-  protected void configure(final HttpSecurity http) throws Exception {
-    http.csrf().disable();
-    http.authorizeRequests().antMatchers("/login").permitAll().antMatchers("/css", "/css/*").permitAll()
-        .antMatchers("/signup").permitAll().anyRequest().authenticated().and().formLogin().permitAll().loginPage("/")
-        .loginProcessingUrl("/login").defaultSuccessUrl("/homepage")
-
-        .and().logout().permitAll().logoutUrl("/logout").logoutSuccessUrl("/");
-  }
+  // @Override
+  // protected void configure(final HttpSecurity http) throws Exception {
+  // http.csrf().disable();
+  // http.authorizeRequests().antMatchers("/login").permitAll().antMatchers("/css",
+  // "/css/*").permitAll()
+  // .antMatchers("/signup").permitAll().anyRequest().authenticated().and().formLogin().permitAll().loginPage("/")
+  // .loginProcessingUrl("/login").defaultSuccessUrl("/home").and().logout().permitAll().logoutUrl("/logout")
+  // .logoutSuccessUrl("/");
+  // }
 
   // @Autowired
   // public void configureGlobal(AuthenticationManagerBuilder auth) throws
@@ -35,8 +35,8 @@ public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
   // auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
   // }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+  // @Bean
+  // public PasswordEncoder passwordEncoder() {
+  // return new BCryptPasswordEncoder();
+  // }
 }
