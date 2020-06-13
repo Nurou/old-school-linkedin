@@ -21,4 +21,8 @@ public class Account extends AbstractPersistable<Long> {
   @NotEmpty
   @Size(min = 3, max = 35)
   private String password;
+
+  @NotEmpty
+  @Size(min = 3, max = 35)
+  private String profileName;
 }

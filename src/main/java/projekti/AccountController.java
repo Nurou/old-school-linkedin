@@ -14,12 +14,13 @@ public class AccountController {
   @Autowired
   AccountRepository accountRepository;
 
-  @Autowired
-  PasswordEncoder passwordEncoder;
+  // @Autowired
+  // PasswordEncoder passwordEncoder;
 
   @GetMapping("/accounts")
   public String list(Model model) {
     model.addAttribute("accounts", accountRepository.findAll());
+    System.out.println(accountRepository.findAll());
     return "accounts";
   }
 
@@ -29,8 +30,9 @@ public class AccountController {
       return "redirect:/accounts";
     }
 
-    Account a = new Account(username, passwordEncoder.encode(password));
-    accountRepository.save(a);
+    // Account a = new Account(username, passwordEncoder.encode(password),
+    // "test-profile");
+    // accountRepository.save(a);
     return "redirect:/accounts";
   }
 
