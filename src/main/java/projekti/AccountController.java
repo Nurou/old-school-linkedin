@@ -1,6 +1,8 @@
 package projekti;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +19,24 @@ public class AccountController {
   // @Autowired
   // PasswordEncoder passwordEncoder;
 
+  @GetMapping("/home")
+  public String homepage(Model model) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String username = auth.getName();
+    System.out.println("The user:  " + username + " logged in.");
+    return "redirect:/profile/" + accountRepository.findByUsername(username).getProfileName();
+  }
+
   @GetMapping("/accounts")
   public String list(Model model) {
     model.addAttribute("accounts", accountRepository.findAll());
     System.out.println(accountRepository.findAll());
     return "accounts";
+  }
+
+  @GetMapping("/register")
+  public String register(Model model) {
+    return "register";
   }
 
   @PostMapping("/accounts")

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head lang="en">
+        <meta charset="UTF-8" />
+        <title>Layout</title>
+    </head>
+    <body>
+        <header th:fragment="header">
+            <h1>Otsikko</h1>
+        </header>
+
+        <footer th:fragment="links">
+            <ul>
+                <li><a th:href="@{/polku1}">Linkki 1</li>
+                <li><a th:href="@{/polku2}">Linkki 2</li>
+                <li><a th:href="@{/polku3}">Linkki 3</li>
+                <li><a th:href="@{/polku4}">Linkki 4</li>
+            </ul>
+        </footer>
+    </body>
+</html>
