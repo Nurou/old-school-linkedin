@@ -15,7 +15,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 public class Account extends AbstractPersistable<Long> {
 
   @NotEmpty
-  @Size(min = 3, max = 35)
+  @Size(min = 3, max = 100)
   private String username;
 
   @NotEmpty
@@ -23,6 +23,6 @@ public class Account extends AbstractPersistable<Long> {
   private String password;
 
   @NotEmpty
-  @Size(min = 3, max = 35)
+  @Size(min = 3, max = 100)
   private String profileName;
 }
