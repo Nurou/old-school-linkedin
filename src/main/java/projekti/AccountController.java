@@ -38,6 +38,8 @@ public class AccountController {
 
   @GetMapping("/users")
   public String list(Model model) {
+    Account a = new Account("nurou", passwordEncoder.encode("password"), "test-profile");
+    accountRepository.save(a);
     model.addAttribute("users", accountRepository.findAll());
     System.out.println(accountRepository.findAll());
     return "users";
@@ -54,8 +56,7 @@ public class AccountController {
       return "redirect:/users";
     }
 
-    Account a = new Account(username, passwordEncoder.encode(password), "test-profile");
-    accountRepository.save(a);
+
     return "redirect:/users";
   }
 
