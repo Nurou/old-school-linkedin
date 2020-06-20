@@ -42,8 +42,11 @@ public class DevelopmentSecurityConfig extends WebSecurityConfigurerAdapter {
     http.csrf().disable();
     // permit frame use
     http.headers().frameOptions().sameOrigin();
-    http.authorizeRequests().antMatchers("/h2-console", "/h2-console/**").permitAll().antMatchers("/", "/register")
-        .permitAll().antMatchers("/users/**").authenticated().anyRequest().authenticated();
+    http.authorizeRequests()
+        .antMatchers("/h2-console", "/h2-console/**").permitAll()
+        .antMatchers("/", "/register").permitAll()
+        .antMatchers("/", "/home", "/js/**", "/css/**").permitAll()
+        .antMatchers("/users/**").authenticated().anyRequest().authenticated();
     // formLogin() enables form-based auth
     http.formLogin().permitAll();
   }

@@ -1,4 +1,4 @@
-package projekti;
+package projekti.Account;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotEmpty;
@@ -19,7 +19,7 @@ public class Account extends AbstractPersistable<Long> {
   private String username;
 
   @NotEmpty
-  // @Size(min = 3, max = 100)
+  @Size(min = 3, max = 100)
   private String password;
 
   @NotEmpty

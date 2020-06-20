@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <title th:text="${title}">Otsikko</title>
@@ -12,14 +12,36 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     />
   </head>
-  <body>
-    <div th:replace="fragments/layout :: header(title='Register')"></div>
-    <!-- <div th:replace="fragments/layout :: nav"></div> -->
-    <form th:action="@{/register}" th:object="${account}" method="POST">
+  <body class="p-5">
+    <div th:replace="fragments/layout :: header(title='Register')"/>
+    <form action="#" th:action="@{/register}" th:object="${account}" method="POST">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" th:field="*{username}" class="form-control">
+            <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username error</div>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" th:field="*{password}" class="form-control">
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password error</div>
+    </div>
+
+    <div class="form-group">
+      <label for="profileName">Profile Name</label>
+      <br/>
+      <label class="form-text text-muted">Enter a profile name for your account profile</label>
+      <input type="text" id="profileName" th:field="*{profileName}" class="form-control">
+          <div th:if="${#fields.hasErrors('profileName')}" th:errors="*{profileName}">profileName error</div>
+    </div>
+
       <button type="submit" class="btn btn-primary">
         Create account
       </button>
     </form>
-    <div th:replace="fragments/layout :: footer"></div>
+   
+    <div th:replace="fragments/layout :: footer"/>
+    
   </body>
 </html>
+
+
