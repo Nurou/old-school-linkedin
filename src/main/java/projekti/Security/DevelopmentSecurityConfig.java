@@ -15,11 +15,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-
 /**
- * Spring Configuration annotation indicates that the class has @Bean definition methods. So Spring container can process the class and generate Spring Beans to be used in the application.
+ * Spring Configuration annotation indicates that the class has @Bean definition
+ * methods. So Spring container can process the class and generate Spring Beans
+ * to be used in the application.
  * 
- * @EnableWebSecurity allows Spring to find (it's a @Configuration and, therefore, @Component) and automatically apply the class to the global WebSecurity.
+ * @EnableWebSecurity allows Spring to find (it's a @Configuration and,
+ *                    therefore, @Component) and automatically apply the class
+ *                    to the global WebSecurity.
  */
 @Profile("!prod")
 @Configuration
@@ -42,32 +45,16 @@ public class DevelopmentSecurityConfig extends WebSecurityConfigurerAdapter {
     http.csrf().disable();
     // permit frame use
     http.headers().frameOptions().sameOrigin();
-    http.authorizeRequests()
-        .antMatchers("/h2-console", "/h2-console/**").permitAll()
-        .antMatchers("/", "/register").permitAll()
-        .antMatchers("/", "/home", "/js/**", "/css/**").permitAll()
-        .antMatchers("/users/**").authenticated().anyRequest().authenticated();
+    http.authorizeRequests().antMatchers("/h2-console", "/h2-console/**").permitAll().antMatchers("/", "/register")
+        .permitAll().antMatchers("/", "/home", "/js/**", "/css/**").permitAll().antMatchers("/users/**").authenticated()
+        .anyRequest().authenticated();
     // formLogin() enables form-based auth
     http.formLogin().permitAll();
   }
 
   @Autowired
-  public void configureGlobal(AuthenticationManagerBuilder auth) throws
-  Exception {
-  auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
   }
 
-
-  /* Define how users are retrieved from database */
-  // @Override
-  // @Bean
-  // protected UserDetailsService userDetailsService() {
-  //   UserDetails fake = User.builder().username("fake")
-  //   .password(passwordEncoder.encode("password"))
-  //   .roles("")
-  //   .build();
-
-  //   return new InMemoryUserDetailsManager(fake);
-
-  // }
 }

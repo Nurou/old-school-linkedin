@@ -1,42 +1,44 @@
 package projekti.Security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Profile("production")
 @Configuration
 @EnableWebSecurity
+@Order(1000)
 public class SecSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  // @Autowired
-  // private CustomUserDetailsService customUserDetailsService;
+  private final PasswordEncoder passwordEncoder;
 
-  // @Override
-  // protected void configure(final HttpSecurity http) throws Exception {
-  // http.csrf().disable();
-  // http.authorizeRequests().antMatchers("/login").permitAll().antMatchers("/css",
-  // "/css/*").permitAll()
-  // .antMatchers("/signup").permitAll().anyRequest().authenticated().and().formLogin().permitAll().loginPage("/")
-  // .loginProcessingUrl("/login").defaultSuccessUrl("/home").and().logout().permitAll().logoutUrl("/logout")
-  // .logoutSuccessUrl("/");
-  // }
+  @Autowired
+  public SecSecurityConfig(PasswordEncoder passwordEncoder) {
+    this.passwordEncoder = passwordEncoder;
+  }
 
-  // @Autowired
-  // public void configureGlobal(AuthenticationManagerBuilder auth) throws
-  // Exception {
-  // auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
-  // }
+  @Autowired
+  private CustomUserDetailsService userDetailsService;
 
-  // @Bean
-  // public PasswordEncoder passwordEncoder() {
-  // return new BCryptPasswordEncoder();
-  // }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.csrf().disable();
+    // permit frame use
+    http.headers().frameOptions().sameOrigin();
+    http.authorizeRequests().antMatchers("/", "/register").permitAll().antMatchers("/", "/home", "/js/**", "/css/**")
+        .permitAll().antMatchers("/users/**").authenticated().anyRequest().authenticated();
+    // formLogin() enables form-based auth
+    http.formLogin().permitAll();
+  }
+
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+  }
 }
