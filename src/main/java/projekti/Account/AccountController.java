@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import projekti.Image.ImageService;
+
 @Controller
 public class AccountController {
 
@@ -28,6 +30,9 @@ public class AccountController {
 
   @Autowired
   AccountService accountService;
+
+  @Autowired
+  ImageService imageService;
 
   @GetMapping("/home")
   public String homePage(Model model) {
@@ -54,7 +59,7 @@ public class AccountController {
         // encode password
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         // add account
-        accountService.addAccount(account);
+        accountService.saveAccount(account);
         // redirect
         return "redirect:/login";
       }
@@ -66,17 +71,18 @@ public class AccountController {
 
   @GetMapping("/users/profile/{profileName}")
   public String viewProfilePage(Model model, @PathVariable String profileName) {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    System.out.println(accountRepository.findByProfileName(profileName));
+    Account profile = accountService.getAccountByProfileName(profileName);
+    model.addAttribute("profile", profile);
+    model.addAttribute("imageId", imageService.getProfileImageId(profile));
+    System.out.println("*********************");
+    System.out.println(imageService.getProfileImageId(profile));
+    System.out.println("*********************");
+    // System.out.println(accountService.getAccountByProfileName(profileName));
     return "profile";
   }
 
   @GetMapping("/users")
   public String list(Model model) {
-    if (accountRepository.findByUsername("nurou") == null) {
-      Account a = new Account("nurou", passwordEncoder.encode("password"), "test-profile");
-      accountRepository.save(a);
-    }
     model.addAttribute("users", accountRepository.findAll());
     System.out.println(accountRepository.findAll());
     return "users";

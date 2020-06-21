@@ -49,7 +49,7 @@ public class DevelopmentSecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll().antMatchers("/", "/home", "/js/**", "/css/**").permitAll().antMatchers("/users/**").authenticated()
         .anyRequest().authenticated();
     // formLogin() enables form-based auth
-    http.formLogin().permitAll();
+    http.formLogin().permitAll().defaultSuccessUrl("/home");
   }
 
   @Autowired

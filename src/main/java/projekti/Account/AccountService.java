@@ -13,12 +13,16 @@ public class AccountService {
     return accountRepository.findByUsername(username);
   }
 
+  public Account getAccountByProfileName(String profileName) {
+    return accountRepository.findByProfileName(profileName);
+  }
+
   /* impose unique usernames */
   public boolean usernameIsValid(String userName) {
     return getAccountByUsername(userName) == null;
   }
 
-  public void addAccount(Account account) {
+  public void saveAccount(Account account) {
     accountRepository.save(account);
   }
 

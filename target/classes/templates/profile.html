@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Profile</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+  </head>
+  <body class="p-5 mt-4">
+    <h1 th:text="'Welcome ' + ${profile.username}">
+      >
+    </h1>
+    <!-- TODO: profile pic -->
+    <div class="container">
+      <div class="row">
+        <div class="col-lg">
+          <h2 class="py-3">Picture</h2>
+          <img
+            th:src="@{/images/{id}/(id=${imageId})}"
+            class="pb-3"
+            style="width: 30%;"
+          />
+          <form
+            method="POST"
+            th:action="@{/images}"
+            enctype="multipart/form-data"
+          >
+            <input type="file" name="file" id="file" />
+            <input type="submit" value="Add" />
+          </form>
+        </div>
+        <div class="col-lg">
+          <h2 class="py-3">Skills</h2>
+          <h2>Connections</h2>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
