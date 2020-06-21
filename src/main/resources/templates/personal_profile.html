@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Profile</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+  </head>
+  <body class="p-5 mt-4">
+    <h1 th:text="'Welcome ' + ${profile.username}">
+      >
+    </h1>
+    <!-- TODO: profile pic -->
+    <div class="container">
+      <div class="row">
+        <div class="col-lg">
+          <h2 class="py-3">Profile Image</h2>
+          <div th:if="${imageId} != null">
+            <img
+              th:src="@{/images/{id}/(id=${imageId})}"
+              class="pb-3"
+              style="width: 30%;"
+            />
+          </div>
+          <div class="mb-3" th:if="${imageId} == null">
+            <img src="https://via.placeholder.com/150" alt="" />
+          </div>
+          <form
+            method="POST"
+            th:action="@{/images}"
+            enctype="multipart/form-data"
+          >
+            <input type="file" name="file" id="file" />
+
+            <input
+              class="d-block mt-2"
+              type="submit"
+              th:value="${profile.profileImage} ? 'Change': 'Add'"
+            />
+          </form>
+        </div>
+        <div class="col-lg">
+          <h2 class="py-3">Skills</h2>
+          <h2>Connections</h2>
+        </div>
+      </div>
+    </div>
+    <h2 class="py-3 mt-4">Explore Profiles</h2>
+    <form class="form-inline" method="POST" th:action="@{/users}">
+      <input
+        class="form-control mr-sm-2"
+        type="search"
+        name="searchTerm"
+        placeholder="Search By Username"
+        aria-label="Search"
+      />
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+        Search
+      </button>
+    </form>
+    <article class="results mt-5 py-3" th:if="${results} != null">
+      <h2 class="pb-3">Profiles Found:</h2>
+      <div class="d-flex">
+        <ul th:each="user : ${results}">
+          <div class="card" style="width: 18rem;">
+            <div th:if="${user.profileImage} != null">
+              <img
+                th:src="@{/user/images/{profileName}/(profileName=${user.profileName})}"
+                class="pb-3"
+                style="
+                  width: 100%;
+                  height: 200px;
+                  object-fit: cover;
+                  object-position: top;
+                "
+              />
+            </div>
+            <div class="card-body">
+              <h5 class="card-title" th:text="${user.username}">username</h5>
+              <a
+                th:href="@{/users/profile/{profileName}/(profileName=${user.profileName})}"
+                class="btn btn-primary"
+                >View Profile</a
+              >
+              <form
+                class="d-inline"
+                method="POST"
+                th:action="@{/connections/new/(requestSource=${profile.profileName},requestTarget=${user.profileName})}"
+              >
+                <button class="btn btn-secondary my-2 my-sm-0" type="submit">
+                  Connect
+                </button>
+              </form>
+            </div>
+          </div>
+        </ul>
+      </div>
+    </article>
+  </body>
+</html>

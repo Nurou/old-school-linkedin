@@ -46,7 +46,7 @@ public class ImageController {
 
     imageService.addUserProfileImage(img, currentUser);
 
-    return "redirect:/users/profile/" + currentUser.getProfileName();
+    return "redirect:/profile/" + currentUser.getProfileName();
   }
 
   @GetMapping("/images")

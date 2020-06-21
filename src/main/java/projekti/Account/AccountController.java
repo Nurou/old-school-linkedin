@@ -49,7 +49,7 @@ public class AccountController {
     final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     final String username = auth.getName();
     System.out.println("The user:  " + username + " logged in.");
-    return "redirect:/users/profile/" + accountService.getAccountByUsername(username).getProfileName();
+    return "redirect:/profile/" + accountService.getAccountByUsername(username).getProfileName();
   }
 
   @GetMapping("/register")
@@ -79,8 +79,25 @@ public class AccountController {
     return "redirect:register";
   }
 
+  @GetMapping("/profile/{profileName}")
+  public String viewLoggedInProfile(final Model model, @PathVariable final String profileName) {
+    final Account profile = accountService.getAccountByProfileName(profileName);
+    model.addAttribute("profile", profile);
+    Long imageId = imageService.getProfileImageId(profile);
+    if (imageId != 0L) {
+      model.addAttribute("imageId", imageId);
+    }
+    model.addAttribute("results", this.results);
+    return "personal_profile";
+  }
+
   @GetMapping("/users/profile/{profileName}")
-  public String viewProfilePage(final Model model, @PathVariable final String profileName) {
+  public String viewConnectedUsersPage(final Model model, @PathVariable final String profileName) {
+    // cannot view profiles before connection
+    // check if the target user has a connection
+
+    // otherwise redirect back to current users page
+
     final Account profile = accountService.getAccountByProfileName(profileName);
     model.addAttribute("profile", profile);
     Long imageId = imageService.getProfileImageId(profile);
@@ -91,18 +108,12 @@ public class AccountController {
     return "profile";
   }
 
-  @GetMapping("/users")
-  public String list(final Model model) {
-    model.addAttribute("users", accountRepository.findAll());
-    return "users";
-  }
-
   @PostMapping("/users")
-  public String add(final Model model, @RequestParam final String searchTerm) {
+  public String add(@RequestParam final String searchTerm) {
     final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     final String username = auth.getName();
     this.results = accountService.getAccountsMatchingSearch(searchTerm);
-    return "redirect:/users/profile/" + accountService.getAccountByUsername(username).getProfileName();
+    return "redirect:/profile/" + accountService.getAccountByUsername(username).getProfileName();
   }
 
 }
