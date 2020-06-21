@@ -45,6 +45,13 @@
         <div class="col-lg">
           <h2 class="py-3">Skills</h2>
           <h2>Connections</h2>
+          <!-- TODO: list all connections here -->
+          <div th:if="${connections} != null">
+            <ul th:each="connection : ${connections}">
+              <li th:text="${connection.profileName}">profile name</li>
+            </ul>
+          </div>
+          <a th:href="@{/}" class="btn btn-primary">Go To Feed</a>
         </div>
       </div>
     </div>
@@ -81,7 +88,7 @@
             <div class="card-body">
               <h5 class="card-title" th:text="${user.username}">username</h5>
               <a
-                th:href="@{/users/profile/{profileName}/(profileName=${user.profileName})}"
+                th:href="@{/users/{profileName}/(profileName=${user.profileName})}"
                 class="btn btn-primary"
                 >View Profile</a
               >

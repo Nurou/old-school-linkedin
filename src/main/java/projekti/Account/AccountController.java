@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import projekti.Connection.Connection;
+import projekti.Connection.ConnectionRepository;
 import projekti.Image.ImageService;
 
 @Controller
@@ -38,6 +40,9 @@ public class AccountController {
   @Autowired
   ImageService imageService;
 
+  @Autowired
+  ConnectionRepository connectionRepository;
+
   private List<Account> results;
 
   public void AccountController() {
@@ -54,6 +59,10 @@ public class AccountController {
 
   @GetMapping("/register")
   public String displayRegistrationPage(@ModelAttribute final Account account) {
+    final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth.getName() != null) {
+      return "redirect:/profile/" + accountService.getAccountByUsername(auth.getName()).getProfileName();
+    }
     return "register";
   }
 
@@ -81,29 +90,55 @@ public class AccountController {
 
   @GetMapping("/profile/{profileName}")
   public String viewLoggedInProfile(final Model model, @PathVariable final String profileName) {
-    final Account profile = accountService.getAccountByProfileName(profileName);
-    model.addAttribute("profile", profile);
-    Long imageId = imageService.getProfileImageId(profile);
+    final Account currentUser = accountService.getAccountByProfileName(profileName);
+    model.addAttribute("profile", currentUser);
+    Long imageId = imageService.getProfileImageId(currentUser);
     if (imageId != 0L) {
       model.addAttribute("imageId", imageId);
     }
     model.addAttribute("results", this.results);
+
+    // add logged in user's connections
+    List<Connection> connections = new ArrayList<>();
+    connections = connectionRepository.findAllByRequestSource(currentUser);
+    List<Account> connectedUsers = new ArrayList<>();
+    for (Connection connection : connections) {
+      connectedUsers.add(connection.getRequestTarget());
+    }
+    model.addAttribute("connections", connectedUsers);
     return "personal_profile";
   }
 
-  @GetMapping("/users/profile/{profileName}")
-  public String viewConnectedUsersPage(final Model model, @PathVariable final String profileName) {
-    // cannot view profiles before connection
-    // check if the target user has a connection
+  @GetMapping("/users/{profileName}")
+  public String viewFellowUser(final Model model, @PathVariable final String profileName) {
 
-    // otherwise redirect back to current users page
-
+    // profile being viewed
     final Account profile = accountService.getAccountByProfileName(profileName);
+
+    // current user's profile
+    final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    final String username = auth.getName();
+    final Account currentUser = accountService.getAccountByUsername(username);
+
+    Connection existingConnection = connectionRepository.findByRequestSourceAndRequestTarget(currentUser, profile);
+
+    // get connection status to said other user
+    if (existingConnection == null) {
+      model.addAttribute("connection", "uninitiated");
+    } else if (existingConnection.getAccepted() == false) {
+      model.addAttribute("connection", "pending");
+    } else {
+      model.addAttribute("connection", "accepted");
+    }
+
+    // add both logged in and viewed users to model
     model.addAttribute("profile", profile);
+    model.addAttribute("current", currentUser);
     Long imageId = imageService.getProfileImageId(profile);
     if (imageId != 0L) {
       model.addAttribute("imageId", imageId);
     }
+    // add search results
     model.addAttribute("results", this.results);
     return "profile";
   }
@@ -112,7 +147,17 @@ public class AccountController {
   public String add(@RequestParam final String searchTerm) {
     final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     final String username = auth.getName();
+
+    // fetch all matches on search term and store them for use in model
     this.results = accountService.getAccountsMatchingSearch(searchTerm);
+
+    // remove current user's profile from the results
+    for (Account account : results) {
+      if (account.getUsername().equals(username)) {
+        results.remove(account);
+      }
+    }
+
     return "redirect:/profile/" + accountService.getAccountByUsername(username).getProfileName();
   }
 

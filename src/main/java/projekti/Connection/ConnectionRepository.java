@@ -10,4 +10,6 @@ import projekti.Account.Account;
 @Repository
 public interface ConnectionRepository extends JpaRepository<Connection, Long> {
   Connection findByRequestSourceAndRequestTarget(Account requestSource, Account requestTarget);
+
+  List<Connection> findAllByRequestSource(Account requestSource);
 }

@@ -15,6 +15,10 @@ public class AccountService {
     return accountRepository.findByUsername(username);
   }
 
+  public Account getById(Long id) {
+    return accountRepository.getOne(id);
+  }
+
   public Account getAccountByProfileName(String profileName) {
     return accountRepository.findByProfileName(profileName);
   }
