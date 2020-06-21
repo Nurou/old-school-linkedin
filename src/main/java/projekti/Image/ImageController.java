@@ -27,6 +27,9 @@ public class ImageController {
   private ImageRepository imageRepository;
 
   @Autowired
+  private ImageService imageService;
+
+  @Autowired
   private AccountService accountService;
 
   @PostMapping("/images")
@@ -38,14 +41,10 @@ public class ImageController {
     img.setSize(file.getSize());
     img.setContent(file.getBytes());
 
-    // TODO: set image to specific user
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     Account currentUser = accountService.getAccountByUsername(auth.getName());
-    currentUser.setProfileImage(img);
 
-    accountService.saveAccount(currentUser);
-
-    imageRepository.save(img);
+    imageService.addUserProfileImage(img, currentUser);
 
     return "redirect:/users/profile/" + currentUser.getProfileName();
   }
@@ -59,6 +58,15 @@ public class ImageController {
   public ResponseEntity<byte[]> viewFile(@PathVariable Long id) {
     Image img = imageRepository.getOne(id);
 
+    final HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.parseMediaType(img.getMediaType()));
+    headers.setContentLength(img.getSize());
+    return new ResponseEntity<>(img.getContent(), headers, HttpStatus.CREATED);
+  }
+
+  @GetMapping("/user/images/{profileName}")
+  public ResponseEntity<byte[]> viewProfileImage(@PathVariable String profileName) {
+    Image img = imageService.getImageByProfileName(profileName);
     final HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.parseMediaType(img.getMediaType()));
     headers.setContentLength(img.getSize());

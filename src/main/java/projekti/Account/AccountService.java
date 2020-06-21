@@ -1,5 +1,7 @@
 package projekti.Account;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,10 @@ public class AccountService {
 
   public Account getAccountByProfileName(String profileName) {
     return accountRepository.findByProfileName(profileName);
+  }
+
+  public List<Account> getAccountsMatchingSearch(String searchTerm) {
+    return accountRepository.findAllByProfileNameLike("%" + searchTerm + "%");
   }
 
   /* impose unique usernames */
