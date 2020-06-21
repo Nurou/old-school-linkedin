@@ -41,7 +41,7 @@ public class AccountController {
   private List<Account> results;
 
   public void AccountController() {
-    this.results = new List<>();
+    this.results = new ArrayList<>();
   }
 
   @GetMapping("/home")
