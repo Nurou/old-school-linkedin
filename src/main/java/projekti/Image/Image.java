@@ -7,6 +7,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Type;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ public class Image extends AbstractPersistable<Long> {
   /* store to db as a 'large object' */
   @Lob
   @Basic(fetch = FetchType.LAZY)
+  @Type(type = "org.hibernate.type.BinaryType")
   private byte[] content;
 
   @OneToOne(mappedBy = "profileImage")
