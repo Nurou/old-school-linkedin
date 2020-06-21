@@ -14,14 +14,26 @@ public class ConnectionController {
   @Autowired
   AccountService accountService;
 
+  @Autowired
+  ConnectionRepository connectionRepository;
+
   @PostMapping("/connections/new")
   public String add(@RequestParam final String requestSource, final String requestTarget) {
 
     Connection connection = new Connection();
 
-    connection.setRequestSource(accountService.getAccountByProfileName(requestSource));
-    connection.setRequestTarget(accountService.getAccountByProfileName(requestTarget));
-    connection.setAccepted(false);
+    Account source = accountService.getAccountByProfileName(requestSource);
+    Account target = accountService.getAccountByProfileName(requestTarget);
+
+    if (connectionRepository.findByRequestSourceAndRequestTarget(source, target) == null) {
+
+      connection.setRequestSource(source);
+      connection.setRequestTarget(target);
+      connection.setAccepted(false);
+
+      connectionRepository.save(connection);
+
+    }
 
     System.out.println(connection);
     return "redirect:/profile/" + requestSource;
