@@ -25,6 +25,9 @@
               style="width: 30%;"
             />
           </div>
+          <div class="mb-3" th:if="${imageId} == null">
+            <img src="https://via.placeholder.com/150" alt="" />
+          </div>
           <form
             method="POST"
             th:action="@{/images}"

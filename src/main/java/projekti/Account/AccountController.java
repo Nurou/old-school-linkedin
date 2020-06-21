@@ -83,7 +83,10 @@ public class AccountController {
   public String viewProfilePage(final Model model, @PathVariable final String profileName) {
     final Account profile = accountService.getAccountByProfileName(profileName);
     model.addAttribute("profile", profile);
-    model.addAttribute("imageId", imageService.getProfileImageId(profile));
+    Long imageId = imageService.getProfileImageId(profile);
+    if (imageId != 0L) {
+      model.addAttribute("imageId", imageId);
+    }
     model.addAttribute("results", this.results);
     return "profile";
   }

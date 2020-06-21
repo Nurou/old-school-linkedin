@@ -16,7 +16,15 @@ public class ImageService {
   AccountService accountService;
 
   public Long getProfileImageId(Account account) {
-    return imageRepository.findByAccount(account).getId();
+
+    Image image = imageRepository.findByAccount(account);
+
+    if (image == null) {
+      return 0L;
+    }
+
+    Long imageId = image.getId();
+    return imageId;
   }
 
   public Image getImageByProfileName(String profileName) {

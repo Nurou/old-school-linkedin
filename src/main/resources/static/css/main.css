@@ -1,3 +1,10 @@
+* {
+}
+
+body {
+  background-color: #f7fafc;
+}
+
 .results ul {
   list-style-type: none;
 }
