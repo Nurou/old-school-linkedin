@@ -2,6 +2,7 @@ package projekti.Image;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import projekti.Account.Account;
 import projekti.Account.AccountRepository;
@@ -15,6 +16,7 @@ public class ImageService {
   @Autowired
   AccountService accountService;
 
+  @Transactional
   public Long getProfileImageId(Account account) {
 
     Image image = imageRepository.findByAccount(account);
@@ -27,6 +29,7 @@ public class ImageService {
     return imageId;
   }
 
+  @Transactional
   public Image getImageByProfileName(String profileName) {
     return imageRepository.findByAccount(accountService.getAccountByProfileName(profileName));
   }
@@ -35,6 +38,7 @@ public class ImageService {
     imageRepository.save(image);
   }
 
+  @Transactional
   public void addUserProfileImage(Image image, Account currentUser) {
     addImage(image);
     currentUser.setProfileImage(image);
