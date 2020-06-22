@@ -96,8 +96,11 @@ public class AccountController {
 
     model.addAttribute("results", this.results);
 
+    // connection & not accepted
     List<String> pending = new ArrayList<>();
+    // connection & accepted
     List<String> accepted = new ArrayList<>();
+
     for (Connection connection : connectionRepository.findAllByRequestSource(currentUser)) {
       if (connection.getAccepted() == false) {
         pending.add(connection.getRequestTarget().getProfileName());
@@ -109,37 +112,27 @@ public class AccountController {
     model.addAttribute("pending", pending);
     model.addAttribute("accepted", accepted);
 
-    List<String> connectionRequests = new ArrayList<>();
+    List<Account> connectionRequests = new ArrayList<>();
 
     // add requests
     for (Connection connection : currentUser.getReceivedRequests()) {
-      connectionRequests.add(connection.getRequestSource().getProfileName());
+      if (connection.getAccepted() == false) {
+        connectionRequests.add(connection.getRequestSource());
+      }
     }
 
     if (!connectionRequests.isEmpty()) {
       model.addAttribute("requests", connectionRequests);
     }
 
-    List<Connection> connections = new ArrayList<>();
-    connections = connectionRepository.findAllByRequestSource(currentUser);
-    List<Account> connectedUsers = new ArrayList<>();
-    for (Connection connection : connections) {
-      connectedUsers.add(connection.getRequestTarget());
-    }
-
-    for (Connection connection : currentUser.getSentRequests()) {
-      System.out.println(connection.getRequestTarget());
-    }
-
-    System.out.println("****************************");
-    System.out.println(currentUser.getSentRequests());
-    System.out.println("****************************");
-    model.addAttribute("connections", connectedUsers);
     return "personal_profile";
   }
 
   @GetMapping("/users/{profileName}")
   public String viewFellowUser(final Model model, @PathVariable final String profileName) {
+
+    // clear search results
+    this.results = null;
 
     // profile being viewed
     final Account profile = accountService.getAccountByProfileName(profileName);
@@ -180,12 +173,16 @@ public class AccountController {
     // fetch all matches on search term and store them for use in model
     this.results = accountService.getAccountsMatchingSearch(searchTerm);
 
+    List<Account> filteredResults = new ArrayList<>();
+
     // remove current user's profile from the results
     for (Account account : results) {
-      if (account.getUsername().equals(username)) {
-        results.remove(account);
+      if (!account.getUsername().equals(username)) {
+        filteredResults.add(account);
       }
     }
+
+    this.results = filteredResults;
 
     return "redirect:/profile/" + accountService.getAccountByUsername(username).getProfileName();
   }

@@ -34,13 +34,13 @@ public class DataLoader implements ApplicationRunner {
     accountService.saveAccount(account1);
 
     Account account2 = new Account();
-    account2.setUsername("tester 1");
+    account2.setUsername("tester1");
     account2.setPassword(passwordEncoder.encode("password"));
     account2.setProfileName("First Tester");
     accountService.saveAccount(account2);
 
     Account account3 = new Account();
-    account3.setUsername("tester 2");
+    account3.setUsername("tester2");
     account3.setPassword(passwordEncoder.encode("password"));
     account3.setProfileName("Second Tester");
     accountService.saveAccount(account3);

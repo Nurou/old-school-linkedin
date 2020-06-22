@@ -10,7 +10,7 @@
     <link rel="stylesheet" th:href="@{/css/main.css}" />
   </head>
   <body class="p-5 mt-4">
-    <h1 th:text="'Welcome ' + ${profile.username}">
+    <h1 th:text="'Welcome ' + ${profile.profileName} + '!'">
       >
     </h1>
     <div class="container">
@@ -43,33 +43,41 @@
         </div>
         <div class="col-lg">
           <h2 class="py-3">Skills</h2>
-          <h2>Connections</h2>
-          <div th:if="${connections} != null">
-            <ul th:each="connection : ${connections}">
+          <!-- <h2>Connections</h2>
+          <div th:if="${accepted} != null">
+            <ul th:each="connection : ${accepted}">
               <li th:text="${connection.profileName}">profile name</li>
             </ul>
-          </div>
+          </div> -->
           <h2>Requests</h2>
-          <ul th:if="${requests} != null" th:each="profileName : ${requests}">
+          <p class="text-muted">
+            These users have requested to connect with you
+          </p>
+          <div th:if="${requests} != null" th:each="request : ${requests}">
             <div class="card" style="width: 18rem;">
               <div class="card-body">
-                <h5 class="card-title" th:text="${profileName}">
+                <h5 class="card-title" th:text="${request.profileName}">
                   profile name
                 </h5>
-                <form class="d-inline" method="POST">
-                  <button class="btn btn-secondary my-2 my-sm-0" type="submit">
+                <form
+                  class="d-inline"
+                  method="POST"
+                  th:action="@{/connections/accept/(requestSourceId=${request.id},requestTargetId=${profile.id})}"
+                >
+                  <button class="btn btn-info my-2 my-sm-0" type="submit">
                     Accept
                   </button>
                 </form>
                 <form class="d-inline" method="POST">
-                  <button class="btn btn-danger my-2 my-sm-0" type="submit">
+                  <button class="btn btn-secondary my-2 my-sm-0" type="submit">
                     Decline
                   </button>
                 </form>
               </div>
             </div>
-          </ul>
+          </div>
           <a th:href="@{/}" class="btn btn-primary mt-5">Go To Feed</a>
+          <a th:href="@{/logout}" class="btn btn-danger mt-5">Logout</a>
         </div>
       </div>
     </div>
