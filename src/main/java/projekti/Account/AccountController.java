@@ -59,10 +59,6 @@ public class AccountController {
 
   @GetMapping("/register")
   public String displayRegistrationPage(@ModelAttribute final Account account) {
-    final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    if (auth.getName() != null) {
-      return "redirect:/profile/" + accountService.getAccountByUsername(auth.getName()).getProfileName();
-    }
     return "register";
   }
 
@@ -71,7 +67,6 @@ public class AccountController {
     if (bindingResult.hasErrors()) {
       return "register";
     }
-    System.out.println(bindingResult);
     try {
       // validate username
       if (accountService.usernameIsValid(account.getUsername())) {
@@ -91,6 +86,7 @@ public class AccountController {
   @GetMapping("/profile/{profileName}")
   public String viewLoggedInProfile(final Model model, @PathVariable final String profileName) {
     final Account currentUser = accountService.getAccountByProfileName(profileName);
+    System.out.println(currentUser);
     model.addAttribute("profile", currentUser);
     Long imageId = imageService.getProfileImageId(currentUser);
     if (imageId != 0L) {
