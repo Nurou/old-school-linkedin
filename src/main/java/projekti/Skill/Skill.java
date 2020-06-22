@@ -16,12 +16,13 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @AllArgsConstructor
 public class Skill extends AbstractPersistable<Long> {
 
-  /* name of skill */
+  // name of skill
   private String name;
-  /* user the skill belongs to */
-  private String profileName;
+  // user the skill belongs to
+  private Long profileId;
 
-  // private List<Account> endorsements;
+  // all user's who've endorsed skill
+  // private List<Account> endorsers;
 
   // @ManyToMany
   // private List<Account> profiles;

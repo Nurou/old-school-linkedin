@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import projekti.Connection.Connection;
 import projekti.Connection.ConnectionRepository;
 import projekti.Image.ImageService;
+import projekti.Skill.SkillRepository;
 
 @Controller
 public class AccountController {
@@ -39,6 +40,9 @@ public class AccountController {
 
   @Autowired
   ImageService imageService;
+
+  @Autowired
+  SkillRepository skillsRepository;
 
   @Autowired
   ConnectionRepository connectionRepository;
@@ -125,6 +129,9 @@ public class AccountController {
       model.addAttribute("requests", connectionRequests);
     }
 
+    // skills
+    model.addAttribute("skills", skillsRepository.findByProfileId(currentUser.getId()));
+
     return "personal_profile";
   }
 
@@ -165,8 +172,8 @@ public class AccountController {
     return "foreign_profile";
   }
 
-  @PostMapping("/users")
-  public String add(@RequestParam final String searchTerm) {
+  @PostMapping("/users/search")
+  public String search(@RequestParam final String searchTerm) {
     final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     final String username = auth.getName();
 
@@ -183,6 +190,17 @@ public class AccountController {
     }
 
     this.results = filteredResults;
+
+    return "redirect:/profile/" + accountService.getAccountByUsername(username).getProfileName();
+  }
+
+  @PostMapping("/users/all")
+  public String getAll() {
+    final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    final String username = auth.getName();
+
+    // fetch all matches on search term and store them for use in model
+    this.results = accountService.getAll();
 
     return "redirect:/profile/" + accountService.getAccountByUsername(username).getProfileName();
   }

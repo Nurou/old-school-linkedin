@@ -43,6 +43,30 @@
         </div>
         <div class="col-lg">
           <h2 class="py-3">Skills</h2>
+          <div>
+            <ul th:if="${skills != null}" th:each="skill : ${skills}">
+              <li th:text="${skill.name}">skill</li>
+            </ul>
+            <form
+              class="form-inline my-3"
+              method="POST"
+              th:action="@{/skills/new/(profileName=${profile.profileName}, profileId=${profile.id})}"
+            >
+              <input
+                class="form-control mr-sm-2"
+                name="skillName"
+                placeholder="Enter Skill Name"
+                aria-label="Skill"
+              />
+              <button
+                class="btn btn-outline-success my-2 my-sm-0"
+                type="submit"
+              >
+                Add
+              </button>
+            </form>
+          </div>
+
           <!-- <h2>Connections</h2>
           <div th:if="${accepted} != null">
             <ul th:each="connection : ${accepted}">
@@ -82,7 +106,7 @@
       </div>
     </div>
     <h2 class="py-3 mt-4">Explore Profiles</h2>
-    <form class="form-inline" method="POST" th:action="@{/users}">
+    <form class="form-inline" method="POST" th:action="@{/users/search}">
       <input
         class="form-control mr-sm-2"
         type="search"
@@ -92,6 +116,11 @@
       />
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
         Search
+      </button>
+    </form>
+    <form class="form-inline my-2" method="POST" th:action="@{/users/all}">
+      <button class="btn btn-outline-success my-4 my-sm-0" type="submit">
+        List All
       </button>
     </form>
     <article class="results mt-5 py-3" th:if="${results} != null">

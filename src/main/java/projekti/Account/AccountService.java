@@ -27,6 +27,10 @@ public class AccountService {
     return accountRepository.findAllByProfileNameLike("%" + searchTerm + "%");
   }
 
+  public List<Account> getAll() {
+    return accountRepository.findAll();
+  }
+
   /* impose unique usernames */
   public boolean usernameIsValid(String userName) {
     return getAccountByUsername(userName) == null;
