@@ -169,6 +169,10 @@ public class AccountController {
     }
     // add search results
     model.addAttribute("results", this.results);
+
+    // skills
+    model.addAttribute("skills", skillsRepository.findByProfileId(profile.getId()));
+
     return "foreign_profile";
   }
 

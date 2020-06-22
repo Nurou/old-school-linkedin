@@ -50,6 +50,16 @@
         </div>
         <div class="col-lg">
           <h2 class="py-3">Skills</h2>
+          <div>
+            <div th:if="${skills != null}" th:each="skill : ${skills}">
+              <span class="badge badge-warning" th:text="${skill.name}"
+                >skill</span
+              >
+              [Likes:
+              <!-- <span th:text="${#lists.size(skill.endorsers)}"></span> -->
+              ]
+            </div>
+          </div>
           <h2>Connections</h2>
         </div>
       </div>

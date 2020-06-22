@@ -44,9 +44,14 @@
         <div class="col-lg">
           <h2 class="py-3">Skills</h2>
           <div>
-            <ul th:if="${skills != null}" th:each="skill : ${skills}">
-              <li th:text="${skill.name}">skill</li>
-            </ul>
+            <div th:if="${skills != null}" th:each="skill : ${skills}">
+              <span class="badge badge-warning" th:text="${skill.name}"
+                >skill</span
+              >
+              [Likes:
+              <!-- <span th:text="${#lists.size(skill.endorsers)}"></span> -->
+              ]
+            </div>
             <form
               class="form-inline my-3"
               method="POST"
