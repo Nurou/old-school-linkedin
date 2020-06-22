@@ -12,16 +12,20 @@ import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import projekti.Comment.Comment;
+import projekti.Connection.Connection;
 import projekti.Image.Image;
 import projekti.Skill.Skill;
 
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Account extends AbstractPersistable<Long> {
 
   @NotEmpty
@@ -36,8 +40,16 @@ public class Account extends AbstractPersistable<Long> {
   @Size(min = 3, max = 100)
   private String profileName;
 
+  @ToString.Exclude
   @OneToOne(cascade = CascadeType.ALL)
   private Image profileImage;
+
+  @ToString.Exclude
+  @OneToMany(mappedBy = "requestSource")
+  private List<Connection> sentRequests;
+  @ToString.Exclude
+  @OneToMany(mappedBy = "requestTarget")
+  private List<Connection> receivedRequests;
 
   // @OneToMany(mappedBy = "account")
   // private List<Comment> comments;

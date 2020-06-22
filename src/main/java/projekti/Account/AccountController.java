@@ -85,22 +85,55 @@ public class AccountController {
 
   @GetMapping("/profile/{profileName}")
   public String viewLoggedInProfile(final Model model, @PathVariable final String profileName) {
+
     final Account currentUser = accountService.getAccountByProfileName(profileName);
-    System.out.println(currentUser);
+
     model.addAttribute("profile", currentUser);
     Long imageId = imageService.getProfileImageId(currentUser);
     if (imageId != 0L) {
       model.addAttribute("imageId", imageId);
     }
+
     model.addAttribute("results", this.results);
 
-    // add logged in user's connections
+    List<String> pending = new ArrayList<>();
+    List<String> accepted = new ArrayList<>();
+    for (Connection connection : connectionRepository.findAllByRequestSource(currentUser)) {
+      if (connection.getAccepted() == false) {
+        pending.add(connection.getRequestTarget().getProfileName());
+      } else {
+        accepted.add(connection.getRequestTarget().getProfileName());
+      }
+    }
+
+    model.addAttribute("pending", pending);
+    model.addAttribute("accepted", accepted);
+
+    List<String> connectionRequests = new ArrayList<>();
+
+    // add requests
+    for (Connection connection : currentUser.getReceivedRequests()) {
+      connectionRequests.add(connection.getRequestSource().getProfileName());
+    }
+
+    if (!connectionRequests.isEmpty()) {
+      model.addAttribute("requests", connectionRequests);
+    }
+
     List<Connection> connections = new ArrayList<>();
     connections = connectionRepository.findAllByRequestSource(currentUser);
     List<Account> connectedUsers = new ArrayList<>();
     for (Connection connection : connections) {
       connectedUsers.add(connection.getRequestTarget());
     }
+
+    for (Connection connection : currentUser.getSentRequests()) {
+      System.out.println(connection.getRequestTarget());
+    }
+
+    System.out.println("****************************");
+    System.out.println(currentUser.getSentRequests());
+    System.out.println("****************************");
     model.addAttribute("connections", connectedUsers);
     return "personal_profile";
   }
@@ -136,7 +169,7 @@ public class AccountController {
     }
     // add search results
     model.addAttribute("results", this.results);
-    return "profile";
+    return "foreign_profile";
   }
 
   @PostMapping("/users")

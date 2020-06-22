@@ -13,7 +13,6 @@
     <h1 th:text="'Welcome ' + ${profile.username}">
       >
     </h1>
-    <!-- TODO: profile pic -->
     <div class="container">
       <div class="row">
         <div class="col-lg">
@@ -45,13 +44,32 @@
         <div class="col-lg">
           <h2 class="py-3">Skills</h2>
           <h2>Connections</h2>
-          <!-- TODO: list all connections here -->
           <div th:if="${connections} != null">
             <ul th:each="connection : ${connections}">
               <li th:text="${connection.profileName}">profile name</li>
             </ul>
           </div>
-          <a th:href="@{/}" class="btn btn-primary">Go To Feed</a>
+          <h2>Requests</h2>
+          <ul th:if="${requests} != null" th:each="profileName : ${requests}">
+            <div class="card" style="width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title" th:text="${profileName}">
+                  profile name
+                </h5>
+                <form class="d-inline" method="POST">
+                  <button class="btn btn-secondary my-2 my-sm-0" type="submit">
+                    Accept
+                  </button>
+                </form>
+                <form class="d-inline" method="POST">
+                  <button class="btn btn-danger my-2 my-sm-0" type="submit">
+                    Decline
+                  </button>
+                </form>
+              </div>
+            </div>
+          </ul>
+          <a th:href="@{/}" class="btn btn-primary mt-5">Go To Feed</a>
         </div>
       </div>
     </div>
@@ -70,6 +88,10 @@
     </form>
     <article class="results mt-5 py-3" th:if="${results} != null">
       <h2 class="pb-3">Profiles Found:</h2>
+      <p class="text-muted">
+        You will be able to view a profile once the connection request has been
+        accepted
+      </p>
       <div class="d-flex">
         <ul th:each="user : ${results}">
           <div class="card" style="width: 18rem;">
@@ -87,7 +109,9 @@
             </div>
             <div class="card-body">
               <h5 class="card-title" th:text="${user.username}">username</h5>
+
               <a
+                th:if="${#lists.contains(accepted, user.profileName)}"
                 th:href="@{/users/{profileName}/(profileName=${user.profileName})}"
                 class="btn btn-primary"
                 >View Profile</a
@@ -97,10 +121,20 @@
                 method="POST"
                 th:action="@{/connections/new/(requestSource=${profile.profileName},requestTarget=${user.profileName})}"
               >
-                <button class="btn btn-secondary my-2 my-sm-0" type="submit">
+                <button
+                  th:if="${not #lists.contains(pending, user.profileName) and not #lists.contains(accepted, user.profileName)}"
+                  class="btn btn-secondary my-2 my-sm-0"
+                  type="submit"
+                >
                   Connect
                 </button>
               </form>
+              <span
+                th:if="${#lists.contains(pending, user.profileName)}"
+                class="badge badge-warning"
+              >
+                Pending Acceptance
+              </span>
             </div>
           </div>
         </ul>

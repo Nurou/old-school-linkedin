@@ -33,7 +33,9 @@ public class AccountService {
   }
 
   public void saveAccount(Account account) {
-    accountRepository.save(account);
+    if (usernameIsValid(account.getUsername())) {
+      accountRepository.save(account);
+    }
   }
 
 }
