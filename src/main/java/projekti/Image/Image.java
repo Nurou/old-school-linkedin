@@ -26,9 +26,9 @@ public class Image extends AbstractPersistable<Long> {
   private Long size;
 
   /* store to db as a 'large object' */
-  @Lob
   @Basic(fetch = FetchType.LAZY)
   @Type(type = "org.hibernate.type.BinaryType")
+  @Lob
   private byte[] content;
 
   @OneToOne(mappedBy = "profileImage")
