@@ -72,12 +72,21 @@
             </form>
           </div>
 
-          <!-- <h2>Connections</h2>
-          <div th:if="${accepted} != null">
-            <ul th:each="connection : ${accepted}">
-              <li th:text="${connection.profileName}">profile name</li>
-            </ul>
-          </div> -->
+          <h2>Connections</h2>
+          <div class="my-3" th:if="${accepted} != null">
+            <div th:each="connection : ${accepted}">
+              <div class="card-body">
+                <h5 class="card-title" th:text="${connection.username}">
+                  username
+                </h5>
+                <a
+                  th:href="@{/users/{profileName}/(profileName=${connection.profileName})}"
+                  class="btn btn-primary"
+                  >View Profile</a
+                >
+              </div>
+            </div>
+          </div>
           <h2>Requests</h2>
           <p class="text-muted">
             These users have requested to connect with you
@@ -151,7 +160,6 @@
             </div>
             <div class="card-body">
               <h5 class="card-title" th:text="${user.username}">username</h5>
-
               <a
                 th:if="${#lists.contains(accepted, user.profileName)}"
                 th:href="@{/users/{profileName}/(profileName=${user.profileName})}"

@@ -103,13 +103,13 @@ public class AccountController {
     // connection & not accepted
     List<String> pending = new ArrayList<>();
     // connection & accepted
-    List<String> accepted = new ArrayList<>();
+    List<Account> accepted = new ArrayList<>();
 
     for (Connection connection : connectionRepository.findAllByRequestSource(currentUser)) {
       if (connection.getAccepted() == false) {
         pending.add(connection.getRequestTarget().getProfileName());
       } else {
-        accepted.add(connection.getRequestTarget().getProfileName());
+        accepted.add(connection.getRequestTarget());
       }
     }
 
