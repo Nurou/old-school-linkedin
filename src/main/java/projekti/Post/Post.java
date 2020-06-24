@@ -21,9 +21,10 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 public class Post extends AbstractPersistable<Long> {
   private String content;
   private Date datePosted;
-  // @OneToMany(mappedBy = "post")
-  // private List<Comment> comments;
-  // @ManyToMany(mappedBy = "likes")
-  // private List<Account> likes;
+  @OneToMany(mappedBy = "post")
+  private List<Comment> comments;
+
+  @ManyToMany(mappedBy = "likedPosts")
+  private List<Account> likes;
 
 }

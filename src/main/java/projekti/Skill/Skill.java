@@ -25,9 +25,7 @@ public class Skill extends AbstractPersistable<Long> {
   private Account account;
 
   // all user's who've endorsed skill
-  // private List<Account> endorsers;
-
-  // @ManyToMany
-  // private List<Account> profiles;
+  @ManyToMany(mappedBy = "endorsements")
+  private List<Account> endorsers;
 
 }

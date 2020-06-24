@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -17,6 +19,7 @@ import lombok.ToString;
 import projekti.Comment.Comment;
 import projekti.Connection.Connection;
 import projekti.Image.Image;
+import projekti.Post.Post;
 import projekti.Skill.Skill;
 
 import org.apache.commons.lang3.builder.ToStringExclude;
@@ -56,13 +59,16 @@ public class Account extends AbstractPersistable<Long> {
   @OneToMany(mappedBy = "requestTarget")
   private List<Connection> receivedRequests;
 
+  // the list of skills this user has listed as theirs
   @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<Skill> skills;
 
-  // @OneToMany(mappedBy = "account")
-  // private List<Comment> comments;
+  // the list of skills that the user has endorsed
+  @JoinTable(name = "Skill_Endorsement", joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "id"))
+  @ManyToMany
+  List<Skill> endorsements;
 
-  // @OneToMany
-  // private List<Skill> endorsements;
-
+  @JoinTable(name = "Post_Like", joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
+  @ManyToMany
+  List<Post> likedPosts;
 }
