@@ -1,6 +1,7 @@
 package projekti.Account;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,11 @@ public class AccountService {
   }
 
   public List<Account> getAccountsMatchingSearch(String searchTerm) {
-    return accountRepository.findAllByProfileNameLike("%" + searchTerm + "%");
+    // return accountRepository.findAllByProfileNameLike("%" + searchTerm + "%");
+    return accountRepository.findAll().stream().filter(acc -> {
+      return acc.getProfileName().toLowerCase().contains(searchTerm.toLowerCase());
+    }).collect(Collectors.toList());
+
   }
 
   public List<Account> getAll() {

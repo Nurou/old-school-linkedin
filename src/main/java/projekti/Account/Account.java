@@ -44,6 +44,10 @@ public class Account extends AbstractPersistable<Long> {
   @OneToOne(cascade = CascadeType.ALL)
   private Image profileImage;
 
+  // all established connections
+  @ManyToMany
+  private List<Account> connections;
+
   @ToString.Exclude
   @OneToMany(mappedBy = "requestSource")
   private List<Connection> sentRequests;

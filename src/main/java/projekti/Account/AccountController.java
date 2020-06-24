@@ -3,9 +3,12 @@ package projekti.Account;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.xpath.SourceTree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import projekti.Connection.Connection;
 import projekti.Connection.ConnectionRepository;
+import projekti.Connection.ConnectionService;
 import projekti.Image.ImageService;
 import projekti.Skill.SkillRepository;
 
@@ -47,11 +51,14 @@ public class AccountController {
   @Autowired
   ConnectionRepository connectionRepository;
 
-  private List<Account> results;
+  @Autowired
+  ConnectionService connectionService;
 
-  public void AccountController() {
-    this.results = new ArrayList<>();
-  }
+  // private List<Account> results;
+
+  // public void AccountController() {
+  // this.results = new ArrayList<>();
+  // }
 
   @GetMapping("/home")
   public String homePage(final Model model) {
@@ -88,7 +95,8 @@ public class AccountController {
   }
 
   @GetMapping("/profile/{profileName}")
-  public String viewLoggedInProfile(final Model model, @PathVariable final String profileName) {
+  public String viewLoggedInProfile(final Model model, @PathVariable final String profileName,
+      @RequestParam(required = false) String searchTerm) {
 
     final Account currentUser = accountService.getAccountByProfileName(profileName);
 
@@ -98,37 +106,30 @@ public class AccountController {
       model.addAttribute("imageId", imageId);
     }
 
-    model.addAttribute("results", this.results);
+    // if search term, limit results
+    System.out.println(searchTerm);
+    if (!searchTerm.isEmpty()) {
+      model.addAttribute("results",
+          accountService.getAll().stream()
+              .filter(acc -> acc.getId() != currentUser.getId()
+                  && acc.getProfileName().toLowerCase().contains(searchTerm.toLowerCase()))
+              .collect(Collectors.toList()));
+    } else {
+      model.addAttribute("results", accountService.getAll().stream().filter(acc -> acc.getId() != currentUser.getId())
+          .collect(Collectors.toList()));
+    }
 
     // connection & not accepted
-    List<String> pending = new ArrayList<>();
-    // connection & accepted
-    List<Account> accepted = new ArrayList<>();
+    List<Long> pending = new ArrayList<>();
 
     for (Connection connection : connectionRepository.findAllByRequestSource(currentUser)) {
       if (connection.getAccepted() == false) {
-        pending.add(connection.getRequestTarget().getProfileName());
-      } else {
-        accepted.add(connection.getRequestTarget());
+        pending.add(connection.getRequestTarget().getId());
       }
     }
 
     model.addAttribute("pending", pending);
-    model.addAttribute("accepted", accepted);
-
-    List<Account> connectionRequests = new ArrayList<>();
-
-    // add requests
-    for (Connection connection : currentUser.getReceivedRequests()) {
-      if (connection.getAccepted() == false) {
-        connectionRequests.add(connection.getRequestSource());
-      }
-    }
-
-    if (!connectionRequests.isEmpty()) {
-      model.addAttribute("requests", connectionRequests);
-    }
-
+    model.addAttribute("connections", connectionService.getConnectedAccountsByUserId(currentUser.getId()));
     // skills
     model.addAttribute("skills", skillsRepository.findByProfileId(currentUser.getId()));
 
@@ -138,16 +139,16 @@ public class AccountController {
   @GetMapping("/users/{profileName}")
   public String viewFellowUser(final Model model, @PathVariable final String profileName) {
 
-    // clear search results
-    this.results = null;
-
-    // profile being viewed
-    final Account profile = accountService.getAccountByProfileName(profileName);
-
     // current user's profile
     final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     final String username = auth.getName();
     final Account currentUser = accountService.getAccountByUsername(username);
+    // get connection names
+    // see if user is in the list
+
+    // profile being viewed
+    final Account profile = accountService.getAccountByProfileName(profileName);
+    System.out.println(profile);
 
     Connection existingConnection = connectionRepository.findByRequestSourceAndRequestTarget(currentUser, profile);
 
@@ -160,6 +161,8 @@ public class AccountController {
       model.addAttribute("connection", "accepted");
     }
 
+    System.out.println(model);
+
     // add both logged in and viewed users to model
     model.addAttribute("profile", profile);
     model.addAttribute("current", currentUser);
@@ -167,8 +170,6 @@ public class AccountController {
     if (imageId != 0L) {
       model.addAttribute("imageId", imageId);
     }
-    // add search results
-    model.addAttribute("results", this.results);
 
     // skills
     model.addAttribute("skills", skillsRepository.findByProfileId(profile.getId()));
@@ -181,19 +182,19 @@ public class AccountController {
     final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     final String username = auth.getName();
 
-    // fetch all matches on search term and store them for use in model
-    this.results = accountService.getAccountsMatchingSearch(searchTerm);
+    // // fetch all matches on search term and store them for use in model
+    // this.results = accountService.getAccountsMatchingSearch(searchTerm);
 
-    List<Account> filteredResults = new ArrayList<>();
+    // List<Account> filteredResults = new ArrayList<>();
 
-    // remove current user's profile from the results
-    for (Account account : results) {
-      if (!account.getUsername().equals(username)) {
-        filteredResults.add(account);
-      }
-    }
+    // // remove current user's profile from the results
+    // for (Account account : results) {
+    // if (!account.getUsername().equals(username)) {
+    // filteredResults.add(account);
+    // }
+    // }
 
-    this.results = filteredResults;
+    // this.results = filteredResults;
 
     return "redirect:/profile/" + accountService.getAccountByUsername(username).getProfileName();
   }
@@ -204,7 +205,9 @@ public class AccountController {
     final String username = auth.getName();
 
     // fetch all matches on search term and store them for use in model
-    this.results = accountService.getAll();
+    // this.results = accountService.getAll().stream().filter(acc ->
+    // !acc.getUsername().equals(username))
+    // .collect(Collectors.toList());
 
     return "redirect:/profile/" + accountService.getAccountByUsername(username).getProfileName();
   }
