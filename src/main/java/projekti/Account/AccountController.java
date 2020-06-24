@@ -54,12 +54,6 @@ public class AccountController {
   @Autowired
   ConnectionService connectionService;
 
-  // private List<Account> results;
-
-  // public void AccountController() {
-  // this.results = new ArrayList<>();
-  // }
-
   @GetMapping("/home")
   public String homePage(final Model model) {
     final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -100,14 +94,16 @@ public class AccountController {
 
     final Account currentUser = accountService.getAccountByProfileName(profileName);
 
+    // add logged in user
     model.addAttribute("profile", currentUser);
+
     Long imageId = imageService.getProfileImageId(currentUser);
+    // pass down image to template if one exists
     if (imageId != 0L) {
       model.addAttribute("imageId", imageId);
     }
 
     // if search term, limit results
-    System.out.println(searchTerm);
     if (!searchTerm.isEmpty()) {
       model.addAttribute("results",
           accountService.getAll().stream()
@@ -121,16 +117,14 @@ public class AccountController {
 
     // connection & not accepted
     List<Long> pending = new ArrayList<>();
-
     for (Connection connection : connectionRepository.findAllByRequestSource(currentUser)) {
       if (connection.getAccepted() == false) {
         pending.add(connection.getRequestTarget().getId());
       }
     }
-
     model.addAttribute("pending", pending);
+
     model.addAttribute("connections", connectionService.getConnectedAccountsByUserId(currentUser.getId()));
-    // skills
     model.addAttribute("skills", skillsRepository.findByProfileId(currentUser.getId()));
 
     return "personal_profile";
@@ -144,24 +138,21 @@ public class AccountController {
     final String username = auth.getName();
     final Account currentUser = accountService.getAccountByUsername(username);
     // get connection names
+    List<Account> currentUserConnections = connectionService.getConnectedAccountsByUserId(currentUser.getId());
+
     // see if user is in the list
+    Boolean isConnected = false;
+    for (Account connection : currentUserConnections) {
+      if (connection.getProfileName().equals(profileName)) {
+        isConnected = true;
+      }
+    }
+
+    model.addAttribute("connected", isConnected);
 
     // profile being viewed
     final Account profile = accountService.getAccountByProfileName(profileName);
     System.out.println(profile);
-
-    Connection existingConnection = connectionRepository.findByRequestSourceAndRequestTarget(currentUser, profile);
-
-    // get connection status to said other user
-    if (existingConnection == null) {
-      model.addAttribute("connection", "uninitiated");
-    } else if (existingConnection.getAccepted() == false) {
-      model.addAttribute("connection", "pending");
-    } else {
-      model.addAttribute("connection", "accepted");
-    }
-
-    System.out.println(model);
 
     // add both logged in and viewed users to model
     model.addAttribute("profile", profile);
@@ -175,41 +166,6 @@ public class AccountController {
     model.addAttribute("skills", skillsRepository.findByProfileId(profile.getId()));
 
     return "foreign_profile";
-  }
-
-  @PostMapping("/users/search")
-  public String search(@RequestParam final String searchTerm) {
-    final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    final String username = auth.getName();
-
-    // // fetch all matches on search term and store them for use in model
-    // this.results = accountService.getAccountsMatchingSearch(searchTerm);
-
-    // List<Account> filteredResults = new ArrayList<>();
-
-    // // remove current user's profile from the results
-    // for (Account account : results) {
-    // if (!account.getUsername().equals(username)) {
-    // filteredResults.add(account);
-    // }
-    // }
-
-    // this.results = filteredResults;
-
-    return "redirect:/profile/" + accountService.getAccountByUsername(username).getProfileName();
-  }
-
-  @PostMapping("/users/all")
-  public String getAll() {
-    final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    final String username = auth.getName();
-
-    // fetch all matches on search term and store them for use in model
-    // this.results = accountService.getAll().stream().filter(acc ->
-    // !acc.getUsername().equals(username))
-    // .collect(Collectors.toList());
-
-    return "redirect:/profile/" + accountService.getAccountByUsername(username).getProfileName();
   }
 
 }

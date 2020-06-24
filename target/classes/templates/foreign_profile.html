@@ -10,29 +10,19 @@
     <link rel="stylesheet" th:href="@{/css/main.css}" />
   </head>
   <body class="p-5 mt-4">
-    <div th:if="${connection} == 'uninitiated'">
-      <h2 th:text="${profile.profileName} + ' is not a contact'"></h2>
-      <form
-        class="d-inline"
-        method="POST"
-        th:action="@{/connections/new/(requestSource=${current.profileName},requestTarget=${profile.profileName})}"
-      >
-        <button class="btn btn-secondary my-2 my-sm-0" type="submit">
-          Connect
-        </button>
-      </form>
-    </div>
-    <div th:if="${connection} == 'pending'">
-      <h2
-        th:text="'A connection request has been made to ' + ${profile.profileName} + '. It is pending their approval.'"
-      ></h2>
+    <div th:if="${connected} == false">
+      <h2 th:text="${profile.profileName} + ' is not a contact yet.'"></h2>
+      <p class="text-muted">
+        You can make a connection request to them by searching for their
+        profile.
+      </p>
       <a
         th:href="@{/profile/{profileName}/(profileName=${current.profileName})}"
         class="btn btn-primary"
         >Back To Profile</a
       >
     </div>
-    <div th:if="${connection} == 'accepted'" class="container">
+    <div th:if="${connected} == true" class="container">
       <div class="row">
         <div class="col-lg">
           <h2 th:text="${profile.profileName}">Name</h2>

@@ -40,30 +40,6 @@ public class ConnectionService {
     return getByUserId(id).stream().filter(conn -> conn.getAccepted() == false).collect(Collectors.toList());
   }
 
-  public List<Account> getAllPending(Long id) {
-    List<Connection> connections = new ArrayList<>();
-    connections = getByUserId(id);
-
-  }
-
-  public List<Account> getAllUnconnected(Long id) {
-    // not in sent or received requests
-    // List<Connection> connections = new ArrayList<>();
-    // connections = getByUserId(id);
-
-    // List<Account> accounts = new ArrayList<>();
-    // accountRepository.findAll();
-
-    // for (Account account : accounts) {
-    // if (account.get) {
-
-    // }
-    // }
-
-    // return getByUserId(id).stream().filter(conn -> conn.getAccepted() ==
-    // true).collect(Collectors.toList());
-  }
-
   public List<Account> getConnectedAccountsByUserId(Long id) {
     List<Connection> connections = getAcceptedConnectionsByUserId(id);
     Set<Account> accounts = new HashSet<>();
