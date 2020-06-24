@@ -100,13 +100,10 @@
           <p class="text-muted">
             These users have requested to connect with you
           </p>
-          <div
-            th:if="${requests} != null"
-            th:each="request : ${profile.receivedRequests}"
-          >
+          <div th:each="request : ${profile.receivedRequests}">
             <div
               th:if="${request.accepted} == false"
-              class="card"
+              class="card my-2"
               style="width: 18rem;"
             >
               <div class="card-body">
@@ -125,7 +122,11 @@
                     Accept
                   </button>
                 </form>
-                <form class="d-inline" method="POST">
+                <form
+                  class="d-inline"
+                  method="POST"
+                  th:action="@{/connections/disconnect/(currentUserId=${profile.id}, otherId=${request.requestSource.id})}"
+                >
                   <button class="btn btn-secondary my-2 my-sm-0" type="submit">
                     Decline
                   </button>

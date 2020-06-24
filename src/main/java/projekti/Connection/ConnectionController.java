@@ -87,7 +87,7 @@ public class ConnectionController {
     Account target = accountService.getById(otherId);
 
     // get connections for current user (who requested disconnection)
-    List<Connection> connections = connectionService.getAcceptedConnectionsByUserId(currentUserId);
+    List<Connection> connections = connectionService.getByUserId(currentUserId);
 
     // filter for ones that include the other user
     connections = connections.stream()
