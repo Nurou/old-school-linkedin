@@ -1,5 +1,8 @@
 package projekti.Connection;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,10 +30,6 @@ public class ConnectionController {
 
   @PostMapping("/connections/new")
   public String add(@RequestParam final String requestSource, final String requestTarget) {
-
-    System.out.println(requestSource);
-    System.out.println(requestTarget);
-
     Connection connection = new Connection();
     // TODO: refactor to use username or id
     Account source = accountService.getAccountByProfileName(requestSource);
@@ -77,6 +76,26 @@ public class ConnectionController {
       connection.setAccepted(true);
       connectionRepository.save(connection);
     }
+
+    return "redirect:/profile/" + target.getProfileName();
+  }
+
+  @PostMapping("/connections/disconnect")
+  public String disconnect(@RequestParam Long currentUserId, Long otherId) {
+
+    Account source = accountService.getById(currentUserId);
+    Account target = accountService.getById(otherId);
+
+    // get connections for current user (who requested disconnection)
+    List<Connection> connections = connectionService.getAcceptedConnectionsByUserId(currentUserId);
+
+    // filter for ones that include the other user
+    connections = connections.stream()
+        .filter(conn -> conn.getRequestSource() == target || conn.getRequestSource() == source)
+        .collect(Collectors.toList());
+
+    // delete the filtered connection
+    connectionService.removeById(connections.get(0).getId());
 
     return "redirect:/profile/" + target.getProfileName();
   }

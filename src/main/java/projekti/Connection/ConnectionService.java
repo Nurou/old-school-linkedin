@@ -72,4 +72,8 @@ public class ConnectionService {
     return accountsList;
   }
 
+  public void removeById(Long id) {
+    connectionRepository.deleteById(id);
+  }
+
 }

@@ -14,4 +14,6 @@ public interface ConnectionRepository extends JpaRepository<Connection, Long> {
   List<Connection> findAllByRequestSource(Account requestSource);
 
   List<Connection> findByAcceptedTrue();
+
+  void deleteByRequestSourceAndRequestTarget(Account requestSource, Account requestTarget);
 }

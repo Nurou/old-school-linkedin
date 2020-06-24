@@ -104,7 +104,7 @@ public class AccountController {
     }
 
     // if search term, limit results
-    if (!searchTerm.isEmpty()) {
+    if (searchTerm != null && !searchTerm.isEmpty()) {
       model.addAttribute("results",
           accountService.getAll().stream()
               .filter(acc -> acc.getId() != currentUser.getId()
