@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -55,11 +56,11 @@ public class Account extends AbstractPersistable<Long> {
   @OneToMany(mappedBy = "requestTarget")
   private List<Connection> receivedRequests;
 
+  @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Skill> skills;
+
   // @OneToMany(mappedBy = "account")
   // private List<Comment> comments;
-
-  // @ManyToMany(mappedBy = "account")
-  // private List<Skill> skills;
 
   // @OneToMany
   // private List<Skill> endorsements;

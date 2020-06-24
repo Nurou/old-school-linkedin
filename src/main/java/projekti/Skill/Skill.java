@@ -3,6 +3,8 @@ package projekti.Skill;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +21,8 @@ public class Skill extends AbstractPersistable<Long> {
   // name of skill
   private String name;
   // user the skill belongs to
-  private Long profileId;
+  @ManyToOne
+  private Account account;
 
   // all user's who've endorsed skill
   // private List<Account> endorsers;

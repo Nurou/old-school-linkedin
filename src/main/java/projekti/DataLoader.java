@@ -31,6 +31,7 @@ public class DataLoader implements ApplicationRunner {
     account1.setUsername("nurou");
     account1.setPassword(passwordEncoder.encode("password"));
     account1.setProfileName("Joel Hassan");
+    // account1.set("Joel Hassan");
     accountService.saveAccount(account1);
 
     Account account2 = new Account();

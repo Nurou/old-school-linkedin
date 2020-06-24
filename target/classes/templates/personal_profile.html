@@ -45,17 +45,15 @@
           <h2 class="py-3">Skills</h2>
           <div>
             <div th:if="${skills != null}" th:each="skill : ${skills}">
-              <span class="badge badge-warning" th:text="${skill.name}"
+              <span class="badge badge-info" th:text="${skill.name}"
                 >skill</span
               >
-              [Likes:
-              <!-- <span th:text="${#lists.size(skill.endorsers)}"></span> -->
-              ]
+              <span class="" th:text="Likes">likes: </span>
             </div>
             <form
               class="form-inline my-3"
               method="POST"
-              th:action="@{/skills/new/(profileName=${profile.profileName}, profileId=${profile.id})}"
+              th:action="@{/skills/new/(profileId=${profile.id})}"
             >
               <input
                 class="form-control mr-sm-2"

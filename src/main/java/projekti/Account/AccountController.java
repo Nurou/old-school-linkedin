@@ -125,7 +125,7 @@ public class AccountController {
     model.addAttribute("pending", pending);
 
     model.addAttribute("connections", connectionService.getConnectedAccountsByUserId(currentUser.getId()));
-    model.addAttribute("skills", skillsRepository.findByProfileId(currentUser.getId()));
+    model.addAttribute("skills", skillsRepository.findAllByAccount(currentUser));
 
     return "personal_profile";
   }
@@ -163,7 +163,7 @@ public class AccountController {
     }
 
     // skills
-    model.addAttribute("skills", skillsRepository.findByProfileId(profile.getId()));
+    model.addAttribute("skills", skillsRepository.findAllByAccount(profile));
 
     return "foreign_profile";
   }

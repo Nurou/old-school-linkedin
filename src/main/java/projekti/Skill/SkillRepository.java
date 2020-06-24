@@ -9,5 +9,6 @@ import projekti.Account.Account;
 
 @Repository
 public interface SkillRepository extends JpaRepository<Skill, Long> {
-  List<Skill> findByProfileId(Long profileId);
+  // List<Skill> findByProfileId(Long profileId);
+  List<Skill> findAllByAccount(Account account);
 }
