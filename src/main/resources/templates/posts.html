@@ -19,7 +19,11 @@
   <body>
     <div class="m-5">
       <h1>Feed</h1>
-      <h3>All Posts</h3>
+      <a
+        th:href="@{/profile/{profileName}/(profileName=${currentUser.profileName})}"
+        class="btn btn-primary my-3"
+        >Back To Profile</a
+      >
       <p class="text-muted">Posts by you and your connections</p>
       <div
         class="d-flex flex-row"
