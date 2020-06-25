@@ -40,13 +40,18 @@ public class PostController {
   @Autowired
   AccountService accountService;
 
+  @Autowired
+  ConnectionService connectionService;
+
   @GetMapping("/posts")
   public String viewFeed(Model model) {
     // logged in user
     final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     final String username = auth.getName();
+    Account currentUser = accountService.getAccountByUsername(username);
     model.addAttribute("posts", postRepository.findAll());
-    model.addAttribute("currentUser", accountService.getAccountByUsername(username));
+    model.addAttribute("currentUser", currentUser);
+    model.addAttribute("userConnections", connectionService.getConnectedAccountsByUserId(currentUser.getId()));
     return "posts";
   }
 

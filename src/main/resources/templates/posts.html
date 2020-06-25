@@ -25,7 +25,11 @@
         th:if="${posts} != null"
         th:each="post : ${posts}"
       >
-        <div class="card my-2" style="width: 18rem;">
+        <div
+          th:if="${#lists.contains(userConnections, post.account)}"
+          class="card my-2"
+          style="width: 18rem;"
+        >
           <div class="card-body">
             <h5 class="card-title" th:text="${post.account.profileName}">
               Author
@@ -66,16 +70,14 @@
             </div>
             <h6>Comments</h6>
             <ul
-              th:if="${post.comments} != null"
-              th:each="comment: ${post.comments}"
+              th:if="${post.comments} != null and ${iterStat.index >= iterStat.size-10}"
+              th:each="comment, iterStat: ${post.comments}"
             >
-              <li th:text="${comment.content}"></li>
-              <span class="pull-right">
-                <i id="like1" class="glyphicon glyphicon-thumbs-up"></i>
-                <div id="like1-bs3"></div>
-                <i id="dislike1" class="glyphicon glyphicon-thumbs-down"></i>
-                <div id="dislike1-bs3"></div>
-              </span>
+              <li
+                style="list-style-type: none;"
+                class="bg-light"
+                th:text="'&quot;' + ${comment.content}+ '&quot;'"
+              ></li>
             </ul>
           </div>
         </div>

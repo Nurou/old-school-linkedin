@@ -45,14 +45,14 @@
           <h2 class="py-3">Skills</h2>
           <div>
             <div th:if="${skills != null}" th:each="skill : ${skills}">
-              <div
-                class="my-2 p-2 d-flex justify-content-between"
-                style="background-color: lightgray; border-radius: 5px;"
-              >
+              <div class="my-2 p-2 d-flex justify-content-between">
                 <span class="badge badge-info" th:text="${skill.name}"
                   >skill</span
                 >
-                <span class="" th:text="Likes">likes: </span>
+                <p class="font-weight-bold" th:text="Likes">
+                  Endorsements:
+                  <span th:text="${#lists.size(skill.endorsers)}"></span>
+                </p>
               </div>
             </div>
             <form
