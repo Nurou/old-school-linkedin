@@ -20,10 +20,8 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 public class Comment extends AbstractPersistable<Long> {
 
   private String content;
-  private String type;
+
   @ManyToOne
   private Post post;
-  @ManyToOne
-  private Account account;
 
 }

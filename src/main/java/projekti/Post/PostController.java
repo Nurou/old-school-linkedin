@@ -2,6 +2,7 @@ package projekti.Post;
 
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -50,10 +51,8 @@ public class PostController {
   }
 
   @PostMapping("/posts")
-  public String newPost(@RequestParam(required = false) String content,
-      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date, final Long accountId) {
-
-    // Account account = accountService.getById(id)
+  public String newPost(@RequestParam String content, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date,
+      final Long accountId) {
 
     Post post = new Post();
     post.setContent(content);
@@ -62,6 +61,29 @@ public class PostController {
     System.out.println(post);
 
     postRepository.save(post);
+
+    return "redirect:/posts";
+  }
+
+  @PostMapping("/posts/{id}/upvote")
+  public String likePost(@RequestParam Long postId, @PathVariable Long id) {
+
+    Post post = postRepository.getOne(postId);
+    Account account = accountService.getById(id);
+    if (!post.getLikes().contains(account)) {
+      List<Account> upvoters = post.getLikes();
+      upvoters.add(account);
+
+      List<Post> likedPosts = account.getLikedPosts();
+      // get the post being liked
+      likedPosts.add(post);
+
+      account.setLikedPosts(likedPosts);
+      post.setLikes(upvoters);
+
+      accountService.saveAccount(account);
+      postRepository.save(post);
+    }
 
     return "redirect:/posts";
   }

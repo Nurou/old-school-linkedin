@@ -7,13 +7,78 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     />
+    <link
+      href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="m-5">
       <h1>Feed</h1>
-      <h2>All Posts</h2>
-      <div th:if="${posts} != null" th:each="post : ${posts}">
-        <div th:text="${post.content}"></div>
+      <h3>All Posts</h3>
+      <div
+        class="d-flex flex-row"
+        th:if="${posts} != null"
+        th:each="post : ${posts}"
+      >
+        <div class="card my-2" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title" th:text="${post.account.profileName}">
+              Author
+            </h5>
+            <h6
+              class="card-subtitle mb-2 text-muted"
+              th:text="${post.publishedOn}"
+            >
+              Date
+            </h6>
+            <p class="card-text" th:text="${post.content}">content</p>
+            <div>
+              <form
+                th:action="@{/posts/{id}/comment/(id=${currentUser.id}, postId=${post.id})}"
+                method="POST"
+              >
+                <textarea
+                  name="content"
+                  placeholder="Comment"
+                  class=""
+                ></textarea>
+                <input type="submit" class="d-inline-block btn-info" />
+              </form>
+              <form
+                th:action="@{/posts/{id}/upvote/(id=${currentUser.id}, postId=${post.id})}"
+                method="POST"
+                class="my-3"
+              >
+                <input
+                  type="submit"
+                  class="btn-success d-block"
+                  value="Upvote!"
+                />
+              </form>
+              <span class="font-weight-bold"
+                >Upvotes: <span th:text="${#lists.size(post.likes)}"></span>
+              </span>
+            </div>
+            <h6>Comments</h6>
+            <ul
+              th:if="${post.comments} != null"
+              th:each="comment: ${post.comments}"
+            >
+              <li th:text="${comment.content}"></li>
+              <span class="pull-right">
+                <i id="like1" class="glyphicon glyphicon-thumbs-up"></i>
+                <div id="like1-bs3"></div>
+                <i id="dislike1" class="glyphicon glyphicon-thumbs-down"></i>
+                <div id="dislike1-bs3"></div>
+              </span>
+            </ul>
+          </div>
+        </div>
       </div>
       <h4>New Post</h4>
       <form th:action="@{/posts/(accountId=${currentUser.id})}" method="POST">
