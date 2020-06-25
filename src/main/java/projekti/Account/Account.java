@@ -22,7 +22,6 @@ import projekti.Image.Image;
 import projekti.Post.Post;
 import projekti.Skill.Skill;
 
-import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
@@ -50,6 +49,7 @@ public class Account extends AbstractPersistable<Long> {
 
   // all established connections
   @ManyToMany
+  @ToString.Exclude
   private List<Account> connections;
 
   @ToString.Exclude
@@ -60,14 +60,21 @@ public class Account extends AbstractPersistable<Long> {
   private List<Connection> receivedRequests;
 
   // the list of skills this user has listed as theirs
+  @ToString.Exclude
   @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<Skill> skills;
 
+  // the list of posts this user has created
+  @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Post> posts;
+
   // user's skills and their endorsers
+  @ToString.Exclude
   @JoinTable(name = "Skill_Endorsement", joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "id"))
   @ManyToMany
   List<Skill> endorsements;
 
+  @ToString.Exclude
   @JoinTable(name = "Post_Like", joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
   @ManyToMany
   List<Post> likedPosts;

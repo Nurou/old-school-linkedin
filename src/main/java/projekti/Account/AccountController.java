@@ -139,9 +139,6 @@ public class AccountController {
       @PathVariable(required = false) Long endorsementSourceId,
       @PathVariable(required = false) Long endorsementTargetId) {
 
-    System.out.println(endorsementSourceId);
-    System.out.println(endorsementTargetId);
-
     // current user's profile
     final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     final String username = auth.getName();
@@ -170,9 +167,15 @@ public class AccountController {
       model.addAttribute("imageId", imageId);
     }
 
-    model.addAttribute("skills", skillsRepository.findAllByAccount(profile).stream().limit(3L).sorted((o1, o2) -> {
+    List<Skill> topSkills = skillsRepository.findAllByAccount(profile).stream().limit(3L).sorted((o1, o2) -> {
       return o1.getEndorsers().size() - o2.getEndorsers().size();
-    }).collect(Collectors.toList()));
+    }).collect(Collectors.toList());
+
+    model.addAttribute("skills", topSkills);
+
+    if (!topSkills.isEmpty()) {
+      model.addAttribute("otherSkills", skillsRepository.findAllByAccount(profile));
+    }
 
     return "foreign_profile";
   }

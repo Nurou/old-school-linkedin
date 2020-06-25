@@ -3,10 +3,23 @@
   <head>
     <title>Home</title>
     <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
   </head>
   <body>
-    <div layout:fragment="content" th:remove="tag">
+    <div class="m-5">
       <h1>Feed</h1>
+      <h2>All Posts</h2>
+      <div th:if="${posts} != null" th:each="post : ${posts}">
+        <div th:text="${post.content}"></div>
+      </div>
+      <h4>New Post</h4>
+      <form th:action="@{/posts/(accountId=${currentUser.id})}" method="POST">
+        <textarea type="text" name="content"></textarea>
+        <input type="submit" class="d-block" />
+      </form>
     </div>
   </body>
 </html>

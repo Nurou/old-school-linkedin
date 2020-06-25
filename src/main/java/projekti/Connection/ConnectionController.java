@@ -63,15 +63,9 @@ public class ConnectionController {
     Account source = accountService.getById(requestSourceId);
     Account target = accountService.getById(requestTargetId);
 
-    System.out.println(source.getId());
-    System.out.println(target.getId());
-
     // get existing connection
     Connection connection = connectionRepository.findByRequestSourceAndRequestTarget(source, target);
 
-    // System.out.println(connection);
-
-    // // change status of accepted to true
     if (connection != null) {
       connection.setAccepted(true);
       connectionRepository.save(connection);
