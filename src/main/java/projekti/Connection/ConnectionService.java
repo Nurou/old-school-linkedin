@@ -32,6 +32,14 @@ public class ConnectionService {
 
   }
 
+  public void addAll(List<Connection> connections) {
+    connectionRepository.saveAll(connections);
+  }
+
+  public void addOne(Connection connection) {
+    connectionRepository.save(connection);
+  }
+
   public List<Connection> getAcceptedConnectionsByUserId(Long id) {
     return getByUserId(id).stream().filter(conn -> conn.getAccepted() == true).collect(Collectors.toList());
   }

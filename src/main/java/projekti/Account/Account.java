@@ -63,7 +63,7 @@ public class Account extends AbstractPersistable<Long> {
   @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<Skill> skills;
 
-  // the list of skills that the user has endorsed
+  // user's skills and their endorsers
   @JoinTable(name = "Skill_Endorsement", joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "skill_id", referencedColumnName = "id"))
   @ManyToMany
   List<Skill> endorsements;

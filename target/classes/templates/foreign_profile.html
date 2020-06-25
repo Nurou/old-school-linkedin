@@ -26,7 +26,6 @@
       <div class="row">
         <div class="col-lg">
           <h2 th:text="${profile.profileName}">Name</h2>
-
           <div th:if="${imageId} != null">
             <img
               th:src="@{/images/{id}/(id=${imageId})}"
@@ -42,15 +41,26 @@
           <h2 class="py-3">Skills</h2>
           <div>
             <div th:if="${skills != null}" th:each="skill : ${skills}">
-              <span class="badge badge-warning" th:text="${skill.name}"
-                >skill</span
+              <div
+                class="my-2 p-2 d-flex justify-content-between"
+                style="background-color: lightgray; border-radius: 5px;"
               >
-              [Likes:
-              <!-- <span th:text="${#lists.size(skill.endorsers)}"></span> -->
-              ]
+                <span class="badge badge-info" th:text="${skill.name}"
+                  >skill</span
+                >
+                <span class="" th:text="${#lists.size(skill.endorsers)}"
+                  >likes
+                </span>
+                <form
+                  method="POST"
+                  th:action="@{/skills/endorse(profileName=${profile.profileName}, endorsementSourceId=${current.id}, endorsementTargetId=${profile.id}, skillId=${skill.id})}"
+                >
+                  <button class="btn btn-success" type="submit">Endorse</button>
+                </form>
+              </div>
             </div>
+            <h2 class="my-3">Connections</h2>
           </div>
-          <h2 class="my-3">Connections</h2>
         </div>
       </div>
     </div>

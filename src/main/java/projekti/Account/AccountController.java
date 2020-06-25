@@ -58,7 +58,6 @@ public class AccountController {
   public String homePage(final Model model) {
     final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     final String username = auth.getName();
-    System.out.println("The user:  " + username + " logged in.");
     return "redirect:/profile/" + accountService.getAccountByUsername(username).getProfileName();
   }
 
@@ -131,7 +130,12 @@ public class AccountController {
   }
 
   @GetMapping("/users/{profileName}")
-  public String viewFellowUser(final Model model, @PathVariable final String profileName) {
+  public String viewFellowUser(final Model model, @PathVariable final String profileName,
+      @PathVariable(required = false) Long endorsementSourceId,
+      @PathVariable(required = false) Long endorsementTargetId) {
+
+    System.out.println(endorsementSourceId);
+    System.out.println(endorsementTargetId);
 
     // current user's profile
     final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -152,7 +156,6 @@ public class AccountController {
 
     // profile being viewed
     final Account profile = accountService.getAccountByProfileName(profileName);
-    System.out.println(profile);
 
     // add both logged in and viewed users to model
     model.addAttribute("profile", profile);
@@ -164,6 +167,8 @@ public class AccountController {
 
     // skills
     model.addAttribute("skills", skillsRepository.findAllByAccount(profile));
+
+    System.out.println(skillsRepository.findAllByAccount(profile).get(0).getEndorsers());
 
     return "foreign_profile";
   }

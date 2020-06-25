@@ -1,5 +1,7 @@
 package projekti.Skill;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ public class SkillController {
   @Autowired
   AccountService accountService;
 
+  // TODO: refactor paths
   @PostMapping("/skills/new")
   public String addSkill(@RequestParam Long profileId, @RequestParam String skillName) {
 
@@ -28,6 +31,32 @@ public class SkillController {
     skillRepository.save(newSkill);
 
     return "redirect:/profile/" + account.getProfileName();
+  }
+
+  @PostMapping("/skills/endorse")
+  public String endorse(@RequestParam Long endorsementSourceId, @RequestParam Long endorsementTargetId,
+      @RequestParam Long skillId) {
+
+    Skill skillEndorsed = skillRepository.getOne(skillId);
+    Account endorsed = accountService.getById(endorsementTargetId);
+    Account endorser = accountService.getById(endorsementSourceId);
+
+    // check if endorsement already exists
+    if (!skillEndorsed.getEndorsers().contains(endorser)) {
+
+      List<Account> endorsers = skillEndorsed.getEndorsers();
+      endorsers.add(endorser);
+
+      List<Skill> currEndorsements = endorser.getEndorsements();
+      currEndorsements.add(skillEndorsed);
+
+      skillEndorsed.setEndorsers(endorsers);
+      skillRepository.save(skillEndorsed);
+      accountService.saveAccount(endorsed);
+      accountService.saveAccount(endorser);
+    }
+
+    return "redirect:/users/" + endorsed.getProfileName();
   }
 
 }

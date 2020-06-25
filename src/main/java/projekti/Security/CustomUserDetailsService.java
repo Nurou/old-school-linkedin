@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
   @Autowired
@@ -19,18 +18,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-      Account account = accountRepository.findByUsername(username);
-      if (account == null) {
-          throw new UsernameNotFoundException("No such user: " + username);
-      }
+    Account account = accountRepository.findTopByUsername(username);
+    if (account == null) {
+      throw new UsernameNotFoundException("No such user: " + username);
+    }
 
-      return new org.springframework.security.core.userdetails.User(
-              account.getUsername(),
-              account.getPassword(),
-              true,
-              true,
-              true,
-              true,
-              Arrays.asList(new SimpleGrantedAuthority("USER")));
+    return new org.springframework.security.core.userdetails.User(account.getUsername(), account.getPassword(), true,
+        true, true, true, Arrays.asList(new SimpleGrantedAuthority("USER")));
   }
 }

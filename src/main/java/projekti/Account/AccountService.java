@@ -13,7 +13,7 @@ public class AccountService {
   AccountRepository accountRepository;
 
   public Account getAccountByUsername(String username) {
-    return accountRepository.findByUsername(username);
+    return accountRepository.findTopByUsername(username);
   }
 
   public Account getById(Long id) {
@@ -45,6 +45,10 @@ public class AccountService {
     if (usernameIsValid(account.getUsername())) {
       accountRepository.save(account);
     }
+  }
+
+  public void addAll(List<Account> accounts) {
+    accountRepository.saveAll(accounts);
   }
 
 }
