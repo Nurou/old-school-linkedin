@@ -24,8 +24,7 @@ public class ConnectionService {
   public List<Connection> getByUserId(Long id) {
     List<Connection> connections = new ArrayList<>();
     connections = connectionRepository.findAll();
-    // filter out the ones where either request source or target does not have the
-    // id
+
     return connections.stream()
         .filter(conn -> (conn.getRequestSource().getId() == id || conn.getRequestTarget().getId() == id))
         .collect(Collectors.toList());

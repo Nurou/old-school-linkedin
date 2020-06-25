@@ -29,11 +29,11 @@ public class ConnectionController {
   ConnectionService connectionService;
 
   @PostMapping("/connections/new")
-  public String add(@RequestParam final String requestSource, final String requestTarget) {
+  public String add(@RequestParam final Long requestSourceId, final Long requestTargetId) {
     Connection connection = new Connection();
-    // TODO: refactor to use username or id
-    Account source = accountService.getAccountByProfileName(requestSource);
-    Account target = accountService.getAccountByProfileName(requestTarget);
+
+    Account source = accountService.getById(requestSourceId);
+    Account target = accountService.getById(requestTargetId);
 
     if (connectionRepository.findByRequestSourceAndRequestTarget(source, target) == null
         && (source.getId() != target.getId())) {
@@ -52,13 +52,11 @@ public class ConnectionController {
     accountService.saveAccount(source);
     accountService.saveAccount(target);
 
-    return "redirect:/profile/" + requestSource;
+    return "redirect:/profile/" + source.getProfileName();
   }
 
   @PostMapping("/connections/accept")
   public String acceptConnection(@RequestParam Long requestSourceId, Long requestTargetId) {
-
-    System.out.println("CONNECTION ACCEPTED");
 
     Account source = accountService.getById(requestSourceId);
     Account target = accountService.getById(requestTargetId);

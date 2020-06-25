@@ -64,7 +64,6 @@ public class PostController {
     post.setAccount(accountService.getById(accountId));
 
     System.out.println(post);
-
     postRepository.save(post);
 
     return "redirect:/posts";
@@ -76,15 +75,15 @@ public class PostController {
     Post post = postRepository.getOne(postId);
     Account account = accountService.getById(id);
     if (!post.getLikes().contains(account)) {
-      List<Account> upvoters = post.getLikes();
-      upvoters.add(account);
+      List<Account> upVoters = post.getLikes();
+      upVoters.add(account);
 
       List<Post> likedPosts = account.getLikedPosts();
-      // get the post being liked
+
       likedPosts.add(post);
 
       account.setLikedPosts(likedPosts);
-      post.setLikes(upvoters);
+      post.setLikes(upVoters);
 
       accountService.saveAccount(account);
       postRepository.save(post);

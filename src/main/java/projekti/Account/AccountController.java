@@ -77,13 +77,9 @@ public class AccountController {
       return "register";
     }
     try {
-      // validate username
       if (accountService.usernameIsValid(account.getUsername())) {
-        // encode password
         account.setPassword(passwordEncoder.encode(account.getPassword()));
-        // add account
         accountService.saveAccount(account);
-        // redirect
         return "redirect:/login";
       }
     } catch (final Exception e) {

@@ -25,7 +25,6 @@ public class AccountService {
   }
 
   public List<Account> getAccountsMatchingSearch(String searchTerm) {
-    // return accountRepository.findAllByProfileNameLike("%" + searchTerm + "%");
     return accountRepository.findAll().stream().filter(acc -> {
       return acc.getProfileName().toLowerCase().contains(searchTerm.toLowerCase());
     }).collect(Collectors.toList());
@@ -36,7 +35,6 @@ public class AccountService {
     return accountRepository.findAll();
   }
 
-  /* impose unique usernames */
   public boolean usernameIsValid(String userName) {
     return getAccountByUsername(userName) == null;
   }

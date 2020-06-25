@@ -20,13 +20,14 @@
     <div class="m-5">
       <h1>Feed</h1>
       <h3>All Posts</h3>
+      <p class="text-muted">Posts by you and your connections</p>
       <div
         class="d-flex flex-row"
         th:if="${posts} != null"
         th:each="post : ${posts}"
       >
         <div
-          th:if="${#lists.contains(userConnections, post.account)}"
+          th:if="${#lists.contains(userConnections, post.account) or post.account == currentUser}"
           class="card my-2"
           style="width: 18rem;"
         >
@@ -85,7 +86,7 @@
       <h4>New Post</h4>
       <form th:action="@{/posts/(accountId=${currentUser.id})}" method="POST">
         <textarea type="text" name="content"></textarea>
-        <input type="submit" class="d-block" />
+        <input type="submit" class="d-block btn btn-info" />
       </form>
     </div>
   </body>

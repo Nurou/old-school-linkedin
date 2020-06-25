@@ -10,9 +10,15 @@
     <link rel="stylesheet" th:href="@{/css/main.css}" />
   </head>
   <body class="p-5 mt-4">
-    <h1 th:text="'Welcome ' + ${profile.profileName} + '!'">
-      >
-    </h1>
+    <nav style="display: flex; justify-content: space-between; height: 20vh;">
+      <h1 th:text="'Welcome ' + ${profile.profileName} + '!'">
+        >
+      </h1>
+      <div>
+        <a th:href="@{/posts}" class="btn btn-primary">Go To Feed</a>
+        <a th:href="@{/logout}" class="btn btn-info">Logout</a>
+      </div>
+    </nav>
     <div class="container">
       <div class="row">
         <div class="col-lg">
@@ -41,9 +47,17 @@
             />
           </form>
         </div>
-        <div class="col-lg">
-          <h2 class="py-3">Skills</h2>
-          <div>
+        <div
+          class="col-lg"
+          style="
+            display: flex;
+            flex-direction: column;
+            border: 5px papayawhip solid;
+            border-radius: 5px;
+          "
+        >
+          <div class="my-4">
+            <h2 class="py-3">Your Skills</h2>
             <div th:if="${skills != null}" th:each="skill : ${skills}">
               <div class="my-2 p-2 d-flex justify-content-between">
                 <span class="badge badge-info" th:text="${skill.name}"
@@ -58,7 +72,7 @@
             <form
               class="form-inline my-3"
               method="POST"
-              th:action="@{/skills/new/(profileId=${profile.id})}"
+              th:action="@{/{profileName}/skills/(profileName=${profile.profileName})}"
             >
               <input
                 class="form-control mr-sm-2"
@@ -75,7 +89,10 @@
             </form>
           </div>
 
-          <h2>Connections</h2>
+          <h2>Existing Connections</h2>
+          <div class="my-3" th:if="${#lists.size(connections) == 0}">
+            <p class="text-muted">You haven't connected with anyone yet</p>
+          </div>
           <div class="my-3" th:if="${connections} != null">
             <div th:each="connection : ${connections}">
               <div class="card-body">
@@ -100,7 +117,17 @@
             </div>
           </div>
           <h2>Requests</h2>
-          <p class="text-muted">
+
+          <div
+            class="my-3"
+            th:if="${#lists.size(profile.receivedRequests) == 0}"
+          >
+            <p class="text-muted">You have no pending connection requests</p>
+          </div>
+          <p
+            class="text-muted"
+            th:if="${#lists.size(profile.receivedRequests) > 0}"
+          >
             These users have requested to connect with you
           </p>
           <div th:each="request : ${profile.receivedRequests}">
@@ -137,8 +164,6 @@
               </div>
             </div>
           </div>
-          <a th:href="@{/posts}" class="btn btn-primary mt-5">Go To Feed</a>
-          <a th:href="@{/logout}" class="btn btn-info mt-5">Logout</a>
         </div>
       </div>
     </div>
@@ -174,7 +199,7 @@
           <div class="card" style="width: 18rem;">
             <div th:if="${user.profileImage} != null">
               <img
-                th:src="@{/user/images/{profileName}/(profileName=${user.profileName})}"
+                th:src="@{/images/{profileName}/(profileName=${user.profileName})}"
                 class="pb-3"
                 style="
                   width: 100%;
@@ -198,7 +223,7 @@
               <form
                 class="d-inline"
                 method="POST"
-                th:action="@{/connections/new/(requestSource=${profile.profileName},requestTarget=${user.profileName})}"
+                th:action="@{/connections/new/(requestSourceId=${profile.id},requestTargetId=${user.id})}"
               >
                 <button
                   th:if="${not #lists.contains(pending, user.id) and not #lists.contains(connections, user)}"

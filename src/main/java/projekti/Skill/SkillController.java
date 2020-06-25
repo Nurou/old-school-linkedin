@@ -19,18 +19,17 @@ public class SkillController {
   @Autowired
   AccountService accountService;
 
-  // TODO: refactor paths
-  @PostMapping("/skills/new")
-  public String addSkill(@RequestParam Long profileId, @RequestParam String skillName) {
+  @PostMapping("/{profileName}/skills")
+  public String addSkill(@PathVariable String profileName, @RequestParam String skillName) {
 
     Skill newSkill = new Skill();
     newSkill.setName(skillName);
-    Account account = accountService.getById(profileId);
+    Account account = accountService.getAccountByProfileName(profileName);
     newSkill.setAccount(account);
 
     skillRepository.save(newSkill);
 
-    return "redirect:/profile/" + account.getProfileName();
+    return "redirect:/profile/" + profileName;
   }
 
   @PostMapping("/skills/endorse")

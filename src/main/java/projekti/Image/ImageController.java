@@ -22,7 +22,6 @@ import projekti.Account.AccountService;
 
 @Controller
 public class ImageController {
-  // TODO: refactor to use service
   @Autowired
   private ImageRepository imageRepository;
 
@@ -64,7 +63,7 @@ public class ImageController {
     return new ResponseEntity<>(img.getContent(), headers, HttpStatus.CREATED);
   }
 
-  @GetMapping("/user/images/{profileName}")
+  @GetMapping("/images/{profileName}")
   public ResponseEntity<byte[]> viewProfileImage(@PathVariable String profileName) {
     Image img = imageService.getImageByProfileName(profileName);
     final HttpHeaders headers = new HttpHeaders();

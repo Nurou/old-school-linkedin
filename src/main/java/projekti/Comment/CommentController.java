@@ -21,7 +21,6 @@ public class CommentController {
   @PostMapping("/posts/{id}/comment")
   public String newComment(@RequestParam Long postId, @PathVariable Long id, @RequestParam String content) {
 
-    // get comment content
     Comment comment = new Comment();
     comment.setContent(content);
     comment.setPost(postRepository.getOne(postId));
