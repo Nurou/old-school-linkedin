@@ -2,6 +2,7 @@ package projekti.Account;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -10,6 +11,9 @@ import javax.validation.Valid;
 
 import org.apache.xpath.SourceTree;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +31,7 @@ import projekti.Connection.Connection;
 import projekti.Connection.ConnectionRepository;
 import projekti.Connection.ConnectionService;
 import projekti.Image.ImageService;
+import projekti.Skill.Skill;
 import projekti.Skill.SkillRepository;
 
 @Controller
@@ -165,10 +170,9 @@ public class AccountController {
       model.addAttribute("imageId", imageId);
     }
 
-    // skills
-    model.addAttribute("skills", skillsRepository.findAllByAccount(profile));
-
-    System.out.println(skillsRepository.findAllByAccount(profile).get(0).getEndorsers());
+    model.addAttribute("skills", skillsRepository.findAllByAccount(profile).stream().limit(3L).sorted((o1, o2) -> {
+      return o1.getEndorsers().size() - o2.getEndorsers().size();
+    }).collect(Collectors.toList()));
 
     return "foreign_profile";
   }

@@ -19,8 +19,10 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Post extends AbstractPersistable<Long> {
+
   private String content;
   private Date datePosted;
+
   @OneToMany(mappedBy = "post")
   private List<Comment> comments;
 
